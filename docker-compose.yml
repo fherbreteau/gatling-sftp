@@ -1,0 +1,14 @@
+---
+version: "2.1"
+services:
+  openssh-server:
+    image: lscr.io/linuxserver/openssh-server:latest
+    container_name: openssh-server
+    hostname: openssh-server #optional
+    environment:
+      - PASSWORD_ACCESS=true
+      - USER_PASSWORD=password
+      - USER_NAME=user
+    ports:
+      - 2222:2222
+    restart: unless-stopped
