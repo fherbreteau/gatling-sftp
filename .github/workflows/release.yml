@@ -26,4 +26,5 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           release-branch-name: main
+          maven-args: "-Dmaven.javadoc.skip=true"
 
