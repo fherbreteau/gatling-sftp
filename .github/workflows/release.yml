@@ -17,14 +17,14 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B clean install --file pom.xml
+        run: mvn -B clean verify
 
-      - name: Release
-        uses: qcastel/github-actions-maven-release@v1.12.37
+      - name: Configure Git user
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Publish Release
+        run: mvn -B release:prepare release:perform -Dmaven.javadoc.skip=true
         env:
-          JAVA_HOME: /usr/lib/jvm/java-11-openjdk/
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          release-branch-name: main
-          maven-args: "-Dmaven.javadoc.skip=true"
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
