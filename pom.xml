@@ -4,12 +4,13 @@
 
     <groupId>com.github.fherbreteau</groupId>
     <artifactId>gatling-sftp</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <description>SFTP plugin for Gatling 3.7.x</description>
+    <version>0.0.2-SNAPSHOT</version>
+    <description>SFTP plugin for Gatling 3.8.x</description>
 
     <properties>
         <java.version>11</java.version>
-        <project.build.encoding>UFT-8</project.build.encoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.plugin.version>3.6.2</maven.compiler.plugin.version>
@@ -17,7 +18,7 @@
         <maven-scala-plugin.version>4.5.6</maven-scala-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 
-        <gatling.version>3.7.6</gatling.version>
+        <gatling.version>3.8.4</gatling.version>
         <apache.sshd.version>2.9.0</apache.sshd.version>
         <commons.io.version>2.11.0</commons.io.version>
     </properties>

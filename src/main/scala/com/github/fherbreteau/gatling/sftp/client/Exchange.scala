@@ -12,6 +12,7 @@ import org.apache.sshd.client.session.ClientSession
 import org.apache.sshd.sftp.client.{SftpClient, SftpClientFactory}
 
 import java.time.Duration.ofSeconds
+import java.util.concurrent.{Executor, Executors}
 import scala.util.control.NonFatal
 
 object Exchange {
@@ -21,14 +22,16 @@ object Exchange {
       client = SshClient.setUpDefaultClient(),
       server = server,
       port = port,
-      credentials = credentials
+      credentials = credentials,
+      executor = Executors.newSingleThreadExecutor()
     )
 }
 
 final case class Exchange(var client: SshClient,
                           server: String,
                           port: Int,
-                          credentials: Credentials) extends StrictLogging {
+                          credentials: Credentials,
+                          executor: Executor) extends StrictLogging {
   def start(): Unit = {
     if (client.isClosed) {
       // If the SshClient was closed, create a new one.
@@ -51,6 +54,11 @@ final case class Exchange(var client: SshClient,
   }
 
   private def executeOperation(transaction: SftpTransaction, coreComponents: CoreComponents): Unit = {
+    // Execute the Sftp operation to not block the virtual user thread.
+    executor.execute(() => executeOperationAsync(transaction, coreComponents))
+  }
+
+  private def executeOperationAsync(transaction: SftpTransaction, coreComponents: CoreComponents): Unit = {
     import coreComponents._
     val startTime = clock.nowMillis
     var sshSession: ClientSession = null
