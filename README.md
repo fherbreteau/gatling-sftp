@@ -2,7 +2,7 @@
 
 ![Build](https://github.com/fherbreteau/gatling-sftp/workflows/Build/badge.svg) 
 
-Plugin for support performance testing with SFTP in Gatling (3.7.x)
+Plugin for support performance testing with SFTP in Gatling (3.8.x)
 
 # Usage
 
