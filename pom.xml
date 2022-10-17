@@ -109,7 +109,7 @@
 
     <distributionManagement>
         <repository>
-            <id>GitHub</id>
+            <id>github</id>
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/fherbreteau/gatling-sftp</url>
         </repository>
