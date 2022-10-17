@@ -1,6 +1,6 @@
 # Gatling SFTP Plugin
 
-![Build](https://github.com/fherbreteau/gatling-sftp/workflows/Build/badge.svg) 
+![Build](https://github.com/fherbreteau/gatling-sftp/actions/workflows/maven.yml/badge.svg) 
 
 Plugin for support performance testing with SFTP in Gatling (3.8.x)
 
