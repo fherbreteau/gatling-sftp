@@ -19,7 +19,7 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 
         <gatling.version>3.8.4</gatling.version>
-        <apache.sshd.version>2.9.1</apache.sshd.version>
+        <apache.sshd.version>2.9.2</apache.sshd.version>
         <commons.io.version>2.11.0</commons.io.version>
     </properties>
 
