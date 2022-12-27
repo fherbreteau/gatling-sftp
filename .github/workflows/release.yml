@@ -8,12 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3
