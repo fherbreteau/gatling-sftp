@@ -4,7 +4,7 @@
 
     <groupId>com.github.fherbreteau</groupId>
     <artifactId>gatling-sftp</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.4</version>
     <description>SFTP plugin for Gatling 3.8.x</description>
 
     <properties>
@@ -119,7 +119,7 @@
         <connection>scm:git:${project.scm.url}.git</connection>
         <developerConnection>scm:git:${project.scm.url}.git</developerConnection>
         <url>https://github.com/fherbreteau/gatling-sftp</url>
-        <tag>HEAD</tag>
+        <tag>0.0.4</tag>
     </scm>
 
 </project>
