@@ -116,9 +116,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:${project.scm.url}</connection>
-        <developerConnection>scm:git:${project.scm.url}</developerConnection>
-        <url>https://github.com/fherbreteau/gatling-sftp.git</url>
+        <connection>scm:git:${project.scm.url}.git</connection>
+        <developerConnection>scm:git:${project.scm.url}.git</developerConnection>
+        <url>https://github.com/fherbreteau/gatling-sftp</url>
         <tag>HEAD</tag>
     </scm>
 
