@@ -1,8 +1,8 @@
 # Gatling SFTP Plugin
+![Build](https://github.com/fherbreteau/gatling-sftp/actions/workflows/maven.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fherbreteau_gatling-sftp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fherbreteau_gatling-sftp)
 
-![Build](https://github.com/fherbreteau/gatling-sftp/actions/workflows/maven.yml/badge.svg) 
-
-Plugin for support performance testing with SFTP in Gatling (3.8.x)
+Plugin for support performance testing with SFTP in Gatling (3.9.x)
 
 # Usage
 

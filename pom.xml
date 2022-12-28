@@ -21,6 +21,10 @@
         <gatling.version>3.9.0</gatling.version>
         <apache.sshd.version>2.9.2</apache.sshd.version>
         <commons.io.version>2.11.0</commons.io.version>
+
+        <sonar.organization>fherbreteau</sonar.organization>
+        <sonar.projectKey>fherbreteau_gatling-sftp</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
