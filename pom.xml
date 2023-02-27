@@ -18,7 +18,7 @@
         <maven-scala-plugin.version>4.8.0</maven-scala-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 
-        <gatling.version>3.9.0</gatling.version>
+        <gatling.version>3.9.2</gatling.version>
         <apache.sshd.version>2.9.2</apache.sshd.version>
         <commons.io.version>2.11.0</commons.io.version>
 
