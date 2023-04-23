@@ -12,7 +12,7 @@ Plugin is currently available for Scala 2.12.
 You may add plugin as dependency in project with your tests. Write this to your build.sbt:
 
 ``` scala
-libraryDependencies += "com.github.fherbreteau" %% "gatling-sftp" % <version> % Test
+libraryDependencies += "io.github.fherbreteau" %% "gatling-sftp" % <version> % Test
 ``` 
 
 ## Example Scenarios
