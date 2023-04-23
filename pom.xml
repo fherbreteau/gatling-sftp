@@ -6,7 +6,9 @@
     <groupId>io.github.fherbreteau</groupId>
     <artifactId>gatling-sftp</artifactId>
     <version>0.0.5-SNAPSHOT</version>
+    <name>SFTP plugin</name>
     <description>SFTP plugin for Gatling 3.9.x</description>
+    <url>${project.scm.url}</url>
 
     <properties>
         <java.version>11</java.version>
@@ -193,7 +195,7 @@
             <roles>
                 <role>Maintainer</role>
             </roles>
-            <timezone>Europe/Paris</timezone>    
+            <timezone>Europe/Paris</timezone>
         </developer>
     </developers>
 
@@ -204,4 +206,10 @@
         <tag>@{project.version}</tag>
     </scm>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
 </project>
