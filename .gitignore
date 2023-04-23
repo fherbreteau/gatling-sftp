@@ -17,3 +17,6 @@
 /*.idea/
 /*.iml
 /**/*.iml
+/.vscode/
+/.metals/
+/.bloop/
