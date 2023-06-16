@@ -10,6 +10,7 @@ import org.apache.sshd.sftp.client.SftpClient
 import org.apache.sshd.sftp.client.SftpClient.OpenMode
 
 import java.nio.file.Files
+import scala.util.Using
 
 final case class SftpOperationDef(operationName: Expression[String],
                                   operationDef: Expression[OperationDef],
@@ -39,22 +40,28 @@ final case class SftpOperation(operationName: String,
         client.rename(remoteSourcePath, remoteDestPath)
       }
       case Copy => client => {
-        val source = client.read(remoteSourcePath)
-        val destination = client.write(remoteDestPath, OpenMode.Create)
-        IoUtils.copy(source, destination)
+        Using.Manager { use =>
+          val source = use(client.read(remoteSourcePath))
+          val destination = use(client.write(remoteDestPath, OpenMode.Create))
+          IoUtils.copy(source, destination)
+        }
       }
       case Delete => client => {
         client.remove(remoteSourcePath)
       }
       case Download => client => {
-        val source = client.read(remoteSourcePath)
-        val destination = Files.newOutputStream(localDestPath)
-        IoUtils.copy(source, destination)
+        Using.Manager { use =>
+          val source = use(client.read(remoteSourcePath))
+          val destination = use(Files.newOutputStream(localDestPath))
+          IoUtils.copy(source, destination)
+        }
       }
       case Upload => client => {
-        val source = Files.newInputStream(localSourcePath)
-        val destination = client.write(remoteDestPath, OpenMode.Create)
-        IoUtils.copy(source, destination)
+        Using.Manager { use =>
+          val source = use(Files.newInputStream(localSourcePath))
+          val destination = use(client.write(remoteDestPath, OpenMode.Create))
+          IoUtils.copy(source, destination)
+        }
       }
     }
   }
