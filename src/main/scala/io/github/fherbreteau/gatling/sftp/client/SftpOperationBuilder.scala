@@ -11,30 +11,32 @@ object SftpOperationBuilder {
 }
 
 case class SftpOperationBuilder(operationName: Expression[String],
-                                file: Expression[String],
+                                source: Expression[String],
+                                destination: Expression[String],
                                 action: Action) extends LazyLogging {
 
-  type OperationBuilderConfigure = Session => OperationBuilder => Validation[OperationBuilder]
+  private type OperationBuilderConfigure = Session => OperationBuilder => Validation[OperationBuilder]
 
-  val ConfigureIdentity: OperationBuilderConfigure = _ => _.success
+  private val ConfigureIdentity: OperationBuilderConfigure = _ => _.success
 
   def build: Expression[OperationDef] =
     session =>
       safely(BuildOperationErrorMapper) {
         for {
           requestName <- operationName(session)
-          file <- file(session)
-          operationBuilder = OperationBuilder(requestName, file, action)
+          source <- source(session)
+          destination <- destination(session)
+          operationBuilder = OperationBuilder(requestName, source, destination, action)
           cb <- configOperationBuilder(session, operationBuilder)
         } yield cb.build
       }
 
-  def configOperationBuilder(session: Session, operationBuilder: OperationBuilder): Validation[OperationBuilder] = {
+  private def configOperationBuilder(session: Session, operationBuilder: OperationBuilder): Validation[OperationBuilder] = {
     ConfigureIdentity(session)(operationBuilder)
   }
 }
 
-case class OperationBuilder(operationName: String, file: String, action: SftpActions.Action) {
+case class OperationBuilder(operationName: String, source: String, destination: String, action: SftpActions.Action) {
 
-  def build: OperationDef = OperationDef(operationName, file, action)
+  def build: OperationDef = OperationDef(operationName, source, destination, action)
 }

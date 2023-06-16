@@ -8,6 +8,8 @@
         <immediateFlush>false</immediateFlush>
     </appender>
 
+    <logger name="org.apache.sshd" level="ERR0R" />
+    <logger name="io.github.fherbreteau" level="TRACE" />
     <!-- uncomment and set to DEBUG to log all failing HTTP requests -->
     <!-- uncomment and set to TRACE to log all HTTP requests -->
     <!--<logger name="io.gatling.http.engine.response" level="TRACE" />-->

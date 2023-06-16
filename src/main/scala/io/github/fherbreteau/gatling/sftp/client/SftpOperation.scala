@@ -3,11 +3,11 @@ package io.github.fherbreteau.gatling.sftp.client
 import io.gatling.commons.validation.Validation
 import io.gatling.core.Predef.Session
 import io.gatling.core.session.Expression
-import io.github.fherbreteau.gatling.sftp.client.SftpActions.{Action, Copy, Delete, Download, Move, Upload}
+import io.github.fherbreteau.gatling.sftp.client.SftpActions.{Action, Copy, Delete, Download, Mkdir, Move, RmDir, Upload}
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocol
 import org.apache.sshd.common.util.io.IoUtils
 import org.apache.sshd.sftp.client.SftpClient
-import org.apache.sshd.sftp.client.SftpClient.OpenMode
+import org.apache.sshd.sftp.client.SftpClient.{CopyMode, OpenMode}
 
 import java.nio.file.Files
 import scala.util.Using
@@ -31,18 +31,18 @@ final case class SftpOperation(operationName: String,
                                throttled: Boolean) {
 
   def build: SftpClient => Unit = {
-    val localSourcePath = sftpProtocol.source(definition.file, isLocal = true)
-    val localDestPath = sftpProtocol.destination(definition.file, isLocal = true)
-    val remoteSourcePath = sftpProtocol.source(definition.file, isLocal = false).toString
-    val remoteDestPath = sftpProtocol.destination(definition.file, isLocal = false).toString
+    val localSourcePath = sftpProtocol.localSource(definition.source)
+    val localDestPath = sftpProtocol.localDestination(definition.destination)
+    val remoteSourcePath = sftpProtocol.remoteSource(definition.source)
+    val remoteDestPath = sftpProtocol.remoteDestination(definition.destination)
     definition.action match {
       case Move => client => {
-        client.rename(remoteSourcePath, remoteDestPath)
+        client.rename(remoteSourcePath, remoteDestPath, CopyMode.Atomic)
       }
       case Copy => client => {
         Using.Manager { use =>
           val source = use(client.read(remoteSourcePath))
-          val destination = use(client.write(remoteDestPath, OpenMode.Create))
+          val destination = use(client.write(remoteDestPath, OpenMode.Create, OpenMode.Write))
           IoUtils.copy(source, destination)
         }
       }
@@ -59,9 +59,15 @@ final case class SftpOperation(operationName: String,
       case Upload => client => {
         Using.Manager { use =>
           val source = use(Files.newInputStream(localSourcePath))
-          val destination = use(client.write(remoteDestPath, OpenMode.Create))
+          val destination = use(client.write(remoteDestPath, OpenMode.Create, OpenMode.Write))
           IoUtils.copy(source, destination)
         }
+      }
+      case Mkdir => client => {
+        client.mkdir(remoteSourcePath)
+      }
+      case RmDir => client => {
+        client.rmdir(remoteSourcePath)
       }
     }
   }
@@ -69,5 +75,6 @@ final case class SftpOperation(operationName: String,
 }
 
 final case class OperationDef(operationName: String,
-                              file: String,
+                              source: String,
+                              destination: String,
                               action: Action) {}

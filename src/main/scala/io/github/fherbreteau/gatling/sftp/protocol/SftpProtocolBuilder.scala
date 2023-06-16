@@ -24,13 +24,16 @@ final case class SftpProtocolBuilder(protocol: SftpProtocol) {
 
   def credentials(username: String, password: String): SftpProtocolBuilder = this.modify(_.protocol.exchange.credentials).setTo(Credentials(username, password))
 
+  def localPath(path: Path): SftpProtocolBuilder = this.localSourcePath(path).localDestinationPath(path)
   def localSourcePath(sourcePath: Path): SftpProtocolBuilder = this.modify(_.protocol.localSourcePath).setTo(Some(sourcePath))
 
   def localDestinationPath(destPath: Path): SftpProtocolBuilder = this.modify(_.protocol.localDestinationPath).setTo(Some(destPath))
 
-  def remoteSourcePath(sourcePath: Path): SftpProtocolBuilder = this.modify(_.protocol.remoteSourcePath).setTo(Some(sourcePath))
+  def remotePath(path: String): SftpProtocolBuilder = this.remoteSourcePath(path).remoteDestinationPath(path)
 
-  def remoteDestinationPath(destPath: Path): SftpProtocolBuilder = this.modify(_.protocol.remoteDestinationPath).setTo(Some(destPath))
+  def remoteSourcePath(sourcePath: String): SftpProtocolBuilder = this.modify(_.protocol.remoteSourcePath).setTo(Some(sourcePath))
+
+  def remoteDestinationPath(destPath: String): SftpProtocolBuilder = this.modify(_.protocol.remoteDestinationPath).setTo(Some(destPath))
 
   def build: SftpProtocol = protocol
 }

@@ -17,28 +17,30 @@ public class Sftp {
         this.name = name;
     }
 
-    public SftpActionBuilder move(@Nonnull String file) {
-        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).move(Expressions.toStringExpression(file)));
+    public SftpActionBuilder mkdir(@Nonnull String directory) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).mkdir(Expressions.toStringExpression(directory)));
     }
 
-    public SftpActionBuilder move(@Nonnull Function<io.gatling.javaapi.core.Session, String> file) {
-        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).move(Expressions.javaFunctionToExpression(file)));
+    public SftpActionBuilder mkdir(@Nonnull Function<io.gatling.javaapi.core.Session, String> directory) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).mkdir(Expressions.javaFunctionToExpression(directory)));
     }
 
-    public SftpActionBuilder copy(@Nonnull String file) {
-        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).copy(Expressions.toStringExpression(file)));
+    public SftpActionBuilder move(@Nonnull String source, @Nonnull String destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).move(Expressions.toStringExpression(source), Expressions.toStringExpression(destination)));
     }
 
-    public SftpActionBuilder copy(@Nonnull Function<io.gatling.javaapi.core.Session, String> file) {
-        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).copy(Expressions.javaFunctionToExpression(file)));
+    public SftpActionBuilder move(@Nonnull Function<io.gatling.javaapi.core.Session, String> source,
+                                  @Nonnull Function<io.gatling.javaapi.core.Session, String> destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).move(Expressions.javaFunctionToExpression(source), Expressions.javaFunctionToExpression(destination)));
     }
 
-    public SftpActionBuilder delete(@Nonnull String file) {
-        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).delete(Expressions.toStringExpression(file)));
+    public SftpActionBuilder copy(@Nonnull String source, @Nonnull String destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).copy(Expressions.toStringExpression(source), Expressions.toStringExpression(destination)));
     }
 
-    public SftpActionBuilder delete(@Nonnull Function<io.gatling.javaapi.core.Session, String> file) {
-        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).delete(Expressions.javaFunctionToExpression(file)));
+    public SftpActionBuilder copy(@Nonnull Function<io.gatling.javaapi.core.Session, String> source,
+                                  @Nonnull Function<io.gatling.javaapi.core.Session, String> destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).copy(Expressions.javaFunctionToExpression(source), Expressions.javaFunctionToExpression(destination)));
     }
 
     public SftpActionBuilder upload(@Nonnull String file) {
@@ -49,6 +51,15 @@ public class Sftp {
         return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).upload(Expressions.javaFunctionToExpression(file)));
     }
 
+    public SftpActionBuilder upload(@Nonnull String source, @Nonnull String destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).upload(Expressions.toStringExpression(source), Expressions.toStringExpression(destination)));
+    }
+
+    public SftpActionBuilder upload(@Nonnull Function<io.gatling.javaapi.core.Session, String> source,
+                                    @Nonnull Function<io.gatling.javaapi.core.Session, String> destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).upload(Expressions.javaFunctionToExpression(source), Expressions.javaFunctionToExpression(destination)));
+    }
+
     public SftpActionBuilder download(@Nonnull String file) {
         return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).download(Expressions.toStringExpression(file)));
     }
@@ -56,4 +67,30 @@ public class Sftp {
     public SftpActionBuilder download(@Nonnull Function<io.gatling.javaapi.core.Session, String> file) {
         return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).download(Expressions.javaFunctionToExpression(file)));
     }
+
+    public SftpActionBuilder download(@Nonnull String source, @Nonnull String destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).download(Expressions.toStringExpression(source), Expressions.toStringExpression(destination)));
+    }
+
+    public SftpActionBuilder download(@Nonnull Function<io.gatling.javaapi.core.Session, String> source,
+                                      @Nonnull Function<io.gatling.javaapi.core.Session, String> destination) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).download(Expressions.javaFunctionToExpression(source), Expressions.javaFunctionToExpression(destination)));
+    }
+
+    public SftpActionBuilder delete(@Nonnull String file) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).delete(Expressions.toStringExpression(file)));
+    }
+
+    public SftpActionBuilder delete(@Nonnull Function<io.gatling.javaapi.core.Session, String> file) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).delete(Expressions.javaFunctionToExpression(file)));
+    }
+
+    public SftpActionBuilder rmdir(@Nonnull String directory) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).rmdir(Expressions.toStringExpression(directory)));
+    }
+
+    public SftpActionBuilder rmdir(@Nonnull Function<io.gatling.javaapi.core.Session, String> directory) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).rmdir(Expressions.javaFunctionToExpression(directory)));
+    }
+
 }

@@ -10,7 +10,8 @@ import io.github.fherbreteau.gatling.sftp.client.{SftpOperationBuilder, SftpOper
 import io.github.fherbreteau.gatling.sftp.protocol.{SftpComponents, SftpProtocol}
 
 case class SftpActionBuilder(operationName: Expression[String],
-                             file: Expression[String],
+                             source: Expression[String],
+                             destination: Expression[String],
                              action: SftpClientAction) extends ActionBuilder {
   override def build(ctx: ScenarioContext, next: Action): Action = {
     val sftpComponents = lookUpSftpComponents(ctx.protocolComponentsRegistry)
@@ -19,7 +20,7 @@ case class SftpActionBuilder(operationName: Expression[String],
   }
 
   private def build(sshProtocol: SftpProtocol, throttled: Boolean): SftpOperationDef = {
-    val resolvedOperationExpression = new SftpOperationBuilder(operationName, file, action).build
+    val resolvedOperationExpression = new SftpOperationBuilder(operationName, source, destination, action).build
     SftpOperationDef(
       operationName,
       resolvedOperationExpression,
