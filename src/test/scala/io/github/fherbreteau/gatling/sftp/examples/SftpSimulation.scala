@@ -15,26 +15,32 @@ class SftpSimulation extends Simulation {
     .server("localhost")
     .port(2222)
     .credentials("user", "password")
-    .localSourcePath(Paths.get("./src/test/resources/data"))
-    .remoteSourcePath(Paths.get("/tmp"))
+    .localPath(Paths.get("./src/test/resources/data"))
+    .remotePath("/tmp")
 
   val scn: ScenarioBuilder = scenario("SFTP Scenario")
     .exec(
       sftp("Upload a file")
         .upload("file_to_upload"))
     .exec(
-      sftp("Move remote file")
-        .copy("file_to_upload"))
+      sftp("Copy remote file")
+        .copy("file_to_upload", "file_copied"))
     .exec(
       sftp("Delete remote file")
-        .delete("file_to_upload")
-    )
-
+        .delete("file_to_upload"))
+    .exec(
+      sftp("Move remote file")
+        .move("file_copied", "file_to_upload"))
+    .exec(
+      sftp("Delete remote file")
+        .delete("file_to_upload"))
   setUp(scn.inject(atOnceUsers(1)).protocols(sftpProtocol))
 }
 
 object SftpSimulation {
-  def main(args: Array[String]): Unit =
-    Gatling.fromMap((new GatlingPropertiesBuilder)
+  def main(args: Array[String]): Unit = {
+    val exitCode = Gatling.fromMap((new GatlingPropertiesBuilder)
       .simulationClass(classOf[io.github.fherbreteau.gatling.sftp.examples.SftpSimulation].getName).build)
+    sys.exit(exitCode);
+  }
 }

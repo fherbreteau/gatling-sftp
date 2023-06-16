@@ -14,11 +14,11 @@ public class SftpProtocolBuilder implements ProtocolBuilder {
         this.wrapped = wrapped;
     }
 
-    public SftpProtocolBuilder client( SshClient client) {
+    public SftpProtocolBuilder client(SshClient client) {
         return new SftpProtocolBuilder(wrapped.client(client));
     }
 
-    public SftpProtocolBuilder server( String server) {
+    public SftpProtocolBuilder server(String server) {
         return new SftpProtocolBuilder(wrapped.server(server));
     }
 
@@ -30,6 +30,10 @@ public class SftpProtocolBuilder implements ProtocolBuilder {
         return new SftpProtocolBuilder(wrapped.credentials(username, password));
     }
 
+    public SftpProtocolBuilder localPath(Path path) {
+        return localSourcePath(path).localDestinationPath(path);
+    }
+
     public SftpProtocolBuilder localSourcePath(Path sourcePath) {
         return new SftpProtocolBuilder(wrapped.localSourcePath(sourcePath));
     }
@@ -38,11 +42,15 @@ public class SftpProtocolBuilder implements ProtocolBuilder {
         return new SftpProtocolBuilder(wrapped.localDestinationPath(destpath));
     }
 
-    public SftpProtocolBuilder remoteSourcePath(Path sourcePath) {
+    public SftpProtocolBuilder remotePath(String path) {
+        return remoteSourcePath(path).remoteDestinationPath(path);
+    }
+
+    public SftpProtocolBuilder remoteSourcePath(String sourcePath) {
         return new SftpProtocolBuilder(wrapped.remoteSourcePath(sourcePath));
     }
 
-    public SftpProtocolBuilder remoteDestinationPath(Path destpath) {
+    public SftpProtocolBuilder remoteDestinationPath(String destpath) {
         return new SftpProtocolBuilder(wrapped.remoteDestinationPath(destpath));
     }
 

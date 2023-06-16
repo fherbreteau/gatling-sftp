@@ -41,22 +41,23 @@ object SftpProtocol extends StrictLogging {
 final case class SftpProtocol(exchange: Exchange,
                               localSourcePath: Option[Path],
                               localDestinationPath: Option[Path],
-                              remoteSourcePath: Option[Path],
-                              remoteDestinationPath: Option[Path]) extends Protocol {
+                              remoteSourcePath: Option[String],
+                              remoteDestinationPath: Option[String]) extends Protocol {
   type Components = SftpComponents
 
-  def source(file: String, isLocal: Boolean): Path = {
-    basePath(localSourcePath, remoteSourcePath, isLocal).resolve(file)
+  def localSource(file: String): Path = {
+    localSourcePath.getOrElse(Paths.get(".")).resolve(file)
   }
 
-  def destination(file: String, isLocal: Boolean): Path = {
-    basePath(localDestinationPath, remoteDestinationPath, isLocal).resolve(file)
+  def localDestination(file: String): Path = {
+    localDestinationPath.getOrElse(Paths.get(".")).resolve(file)
   }
 
-  private def basePath(localPath: Option[Path], remotePath: Option[Path], isLocal: Boolean): Path =
-    if (isLocal) {
-      localPath.getOrElse(Paths.get("."))
-    } else {
-      remotePath.getOrElse(Paths.get(s"/home/${exchange.credentials.username}"))
-    }
+  def remoteSource(file: String): String = {
+    remoteSourcePath.getOrElse(s"/home/${exchange.credentials.username}").concat("/").concat(file)
+  }
+
+  def remoteDestination(file: String): String = {
+    remoteDestinationPath.getOrElse(s"/home/${exchange.credentials.username}").concat("/").concat(file)
+  }
 }

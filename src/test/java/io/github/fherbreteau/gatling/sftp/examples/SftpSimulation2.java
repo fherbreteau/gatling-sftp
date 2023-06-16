@@ -1,5 +1,7 @@
 package io.github.fherbreteau.gatling.sftp.examples;
 
+import io.gatling.app.Gatling;
+import io.gatling.core.config.GatlingPropertiesBuilder;
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.github.fherbreteau.gatling.sftp.javaapi.protocol.SftpProtocolBuilder;
@@ -16,18 +18,27 @@ public class SftpSimulation2 extends Simulation {
             .server("localhost")
             .port(2222)
             .credentials("user", "password")
-            .localSourcePath(Paths.get("./src/test/resources/data"))
-            .remoteSourcePath(Paths.get("/tmp"));
+            .localPath(Paths.get("./src/test/resources/data"))
+            .remotePath("/tmp");
 
     ScenarioBuilder scn = scenario("SFTP Scenario")
             .exec(sftp("Upload a file")
                     .upload("file_to_upload"))
+            .exec(sftp("Copy remote file")
+                    .copy("file_to_upload", "file_copied"))
+            .exec(sftp("Delete remote file")
+                    .delete("file_to_upload"))
             .exec(sftp("Move remote file")
-                    .copy("file_to_upload"))
+                    .move("file_copied", "file_to_upload"))
             .exec(sftp("Delete remote file")
                     .delete("file_to_upload"));
 
     {
         setUp(scn.injectOpen(atOnceUsers(1)).protocols(sftpProtocol));
+    }
+
+    public static void main(String[] args) {
+        int exitCode = Gatling.fromMap(new GatlingPropertiesBuilder().simulationClass(SftpSimulation2.class.getName()).build());
+        System.exit(exitCode);
     }
 }

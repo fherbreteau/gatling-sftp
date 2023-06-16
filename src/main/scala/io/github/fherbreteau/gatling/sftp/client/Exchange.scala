@@ -8,12 +8,15 @@ import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import io.github.fherbreteau.gatling.sftp.client.result.{SftpFailure, SftpResponse, SftpResult}
 import org.apache.sshd.client.SshClient
+import org.apache.sshd.client.auth.UserAuthFactory
+import org.apache.sshd.client.auth.password.UserAuthPasswordFactory
 import org.apache.sshd.client.session.ClientSession
 import org.apache.sshd.sftp.client.{SftpClient, SftpClientFactory}
 
 import java.time.Duration.ofSeconds
 import java.util.concurrent.{Executor, Executors}
 import scala.util.control.NonFatal
+import scala.jdk.CollectionConverters._
 
 object Exchange {
 
@@ -37,6 +40,8 @@ final case class Exchange(var client: SshClient,
       // If the SshClient was closed, create a new one.
       client = SshClient.setUpDefaultClient()
     }
+    val authFactories: List[UserAuthFactory] = List(UserAuthPasswordFactory.INSTANCE)
+    client.setUserAuthFactories(authFactories.asJava)
     client.start()
   }
 
@@ -76,9 +81,10 @@ final case class Exchange(var client: SshClient,
       logger.debug(s"Opening SFTP Client scenario=${transaction.scenario} userId=${transaction.userId}")
       val executor = transaction.sftpOperation.build
 
-      logger.debug(s"Executing required operation scenario=${transaction.scenario} userId=${transaction.userId}")
+      logger.debug(s"Executing operation=${transaction.sftpOperation.operationName} scenario=${transaction.scenario} userId=${transaction.userId}")
       executor.apply(sftpClient)
 
+      logger.debug(s"Action ${transaction.action} successful")
       SftpResponse(transaction.action, startTime, clock.nowMillis, OK)
     } catch {
       case NonFatal(t) =>
