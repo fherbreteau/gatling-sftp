@@ -1,8 +1,6 @@
 package io.github.fherbreteau.gatling.sftp.examples
 
-import io.gatling.app.Gatling
 import io.gatling.core.Predef._
-import io.gatling.core.config.GatlingPropertiesBuilder
 import io.gatling.core.structure.ScenarioBuilder
 import io.github.fherbreteau.gatling.sftp.Predef.sftp
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocolBuilder
@@ -35,12 +33,4 @@ class SftpSimulation extends Simulation {
       sftp("Delete remote file")
         .delete("file_to_upload"))
   setUp(scn.inject(atOnceUsers(1)).protocols(sftpProtocol))
-}
-
-object SftpSimulation {
-  def main(args: Array[String]): Unit = {
-    val exitCode = Gatling.fromMap((new GatlingPropertiesBuilder)
-      .simulationClass(classOf[io.github.fherbreteau.gatling.sftp.examples.SftpSimulation].getName).build)
-    sys.exit(exitCode);
-  }
 }

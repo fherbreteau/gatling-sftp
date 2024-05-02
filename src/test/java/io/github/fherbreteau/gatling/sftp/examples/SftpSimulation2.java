@@ -1,7 +1,5 @@
 package io.github.fherbreteau.gatling.sftp.examples;
 
-import io.gatling.app.Gatling;
-import io.gatling.core.config.GatlingPropertiesBuilder;
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.github.fherbreteau.gatling.sftp.javaapi.protocol.SftpProtocolBuilder;
@@ -35,10 +33,5 @@ public class SftpSimulation2 extends Simulation {
 
     {
         setUp(scn.injectOpen(atOnceUsers(1)).protocols(sftpProtocol));
-    }
-
-    public static void main(String[] args) {
-        int exitCode = Gatling.fromMap(new GatlingPropertiesBuilder().simulationClass(SftpSimulation2.class.getName()).build());
-        System.exit(exitCode);
     }
 }
