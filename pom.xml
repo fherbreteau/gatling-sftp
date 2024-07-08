@@ -25,7 +25,7 @@
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
 
         <gatling.version>3.11.3</gatling.version>
-        <apache.sshd.version>2.12.1</apache.sshd.version>
+        <apache.sshd.version>2.13.1</apache.sshd.version>
         <commons.io.version>2.16.1</commons.io.version>
 
         <sonar.organization>fherbreteau</sonar.organization>
