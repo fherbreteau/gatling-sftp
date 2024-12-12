@@ -7,7 +7,7 @@
     <artifactId>gatling-sftp</artifactId>
     <version>0.0.8-SNAPSHOT</version>
     <name>SFTP plugin</name>
-    <description>SFTP plugin for Gatling 3.9.x</description>
+    <description>SFTP plugin for Gatling</description>
     <url>${project.scm.url}</url>
 
     <properties>
@@ -24,7 +24,7 @@
         <maven-deploy-plugin.version>1.7.0</maven-deploy-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
 
-        <gatling.version>3.11.5</gatling.version>
+        <gatling.version>3.13.1</gatling.version>
         <apache.sshd.version>2.14.0</apache.sshd.version>
         <commons.io.version>2.18.0</commons.io.version>
 

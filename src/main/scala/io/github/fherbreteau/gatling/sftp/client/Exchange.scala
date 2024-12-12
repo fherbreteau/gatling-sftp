@@ -4,6 +4,7 @@ import com.typesafe.scalalogging.StrictLogging
 import io.gatling.commons.model.Credentials
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.CoreComponents
+import io.gatling.core.controller.throttle.Throttler
 import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import io.github.fherbreteau.gatling.sftp.client.result.{SftpFailure, SftpResponse, SftpResult}
@@ -51,7 +52,8 @@ final case class Exchange(var client: SshClient,
     logger.debug(s"Sending operation=${transaction.fullRequestName} server=${transaction.server} scenario=${transaction.scenario} userId=${transaction.userId}")
     coreComponents.throttler match {
       case Some(th) if transaction.throttled =>
-        th.throttle(transaction.scenario,
+        th ! Throttler.Command.ThrottledRequest(
+          transaction.scenario,
           () => executeOperation(transaction, coreComponents)
         )
       case _ => executeOperation(transaction, coreComponents)
