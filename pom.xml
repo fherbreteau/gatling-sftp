@@ -24,7 +24,7 @@
         <maven-deploy-plugin.version>1.7.0</maven-deploy-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
 
-        <gatling.version>3.13.5</gatling.version>
+        <gatling.version>3.14.3</gatling.version>
         <apache.sshd.version>2.15.0</apache.sshd.version>
         <commons.io.version>2.18.0</commons.io.version>
 
