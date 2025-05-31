@@ -23,10 +23,12 @@
         <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
         <maven-deploy-plugin.version>1.7.0</maven-deploy-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
+        <gatling-maven-plugin.version>4.19.0</gatling-maven-plugin.version>
 
         <gatling.version>3.14.3</gatling.version>
         <apache.sshd.version>2.15.0</apache.sshd.version>
         <commons.io.version>2.19.0</commons.io.version>
+        <crypto.eddsa.version>0.3.0</crypto.eddsa.version>
 
         <sonar.organization>fherbreteau</sonar.organization>
         <sonar.projectKey>fherbreteau_gatling-sftp</sonar.projectKey>
@@ -63,6 +65,14 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.io.version}</version>
+        </dependency>
+
+        <!-- Ed25519 Key loading -->
+        <dependency>
+            <groupId>net.i2p.crypto</groupId>
+            <artifactId>eddsa</artifactId>
+            <version>${crypto.eddsa.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -174,6 +184,14 @@
                         <arg>--pinentry-mode</arg>
                         <arg>loopback</arg>
                     </gpgArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.gatling</groupId>
+                <artifactId>gatling-maven-plugin</artifactId>
+                <version>${gatling-maven-plugin.version}</version>
+                <configuration>
+                    <!-- Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://docs.gatling.io/reference/integrations/build-tools/maven-plugin/ -->
                 </configuration>
             </plugin>
         </plugins>
