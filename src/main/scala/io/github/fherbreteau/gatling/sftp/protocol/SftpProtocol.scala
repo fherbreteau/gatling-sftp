@@ -1,11 +1,11 @@
 package io.github.fherbreteau.gatling.sftp.protocol
 
 import com.typesafe.scalalogging.StrictLogging
-import io.gatling.commons.model.Credentials
 import io.gatling.core.CoreComponents
 import io.gatling.core.config.GatlingConfiguration
 import io.gatling.core.protocol.{Protocol, ProtocolKey}
 import io.github.fherbreteau.gatling.sftp.client.Exchange
+import io.github.fherbreteau.gatling.sftp.model.PasswordAuth
 
 import java.nio.file.{Path, Paths}
 
@@ -29,7 +29,7 @@ object SftpProtocol extends StrictLogging {
       exchange = Exchange(
         server = "localhost",
         port = 22,
-        credentials = Credentials("", "")
+        credentials = PasswordAuth("", ""),
       ),
       localSourcePath = None,
       localDestinationPath = None,

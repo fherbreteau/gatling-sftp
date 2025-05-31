@@ -37,7 +37,8 @@ final case class SftpOperation(operationName: String,
     val remoteDestPath = sftpProtocol.remoteDestination(definition.destination)
     definition.action match {
       case Move => client => {
-        client.rename(remoteSourcePath, remoteDestPath, CopyMode.Atomic)
+
+        client.rename(remoteSourcePath, remoteDestPath)
       }
       case Copy => client => {
         Using.Manager { use =>

@@ -1,13 +1,13 @@
 package io.github.fherbreteau.gatling.sftp.client
 
 import com.typesafe.scalalogging.StrictLogging
-import io.gatling.commons.model.Credentials
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.CoreComponents
 import io.gatling.core.controller.throttle.Throttler
 import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import io.github.fherbreteau.gatling.sftp.client.result.{SftpFailure, SftpResponse, SftpResult}
+import io.github.fherbreteau.gatling.sftp.model.{Credentials, KeyPairAuth, PasswordAuth}
 import org.apache.sshd.client.SshClient
 import org.apache.sshd.client.auth.UserAuthFactory
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory
@@ -74,7 +74,10 @@ final case class Exchange(var client: SshClient,
       logger.debug(s"Creating New Session scenario=${transaction.scenario} userId=${transaction.userId}")
       sshSession = client.connect(credentials.username, server, port)
         .verify(ofSeconds(5)).getSession
-      sshSession.addPasswordIdentity(credentials.password)
+      credentials match {
+        case _ @ PasswordAuth(_, password) => sshSession.addPasswordIdentity(password)
+        case _ @ KeyPairAuth(_, keyPair) => sshSession.addPublicKeyIdentity(keyPair)
+      }
       sshSession.auth()
         .verify(ofSeconds(5))
       sftpClient = SftpClientFactory.instance()

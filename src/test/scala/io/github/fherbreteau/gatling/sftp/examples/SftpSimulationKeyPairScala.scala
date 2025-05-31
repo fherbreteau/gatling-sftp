@@ -4,33 +4,45 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
 import io.github.fherbreteau.gatling.sftp.Predef.sftp
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocolBuilder
+import org.apache.sshd.common.config.keys.FilePasswordProvider
+import org.apache.sshd.common.util.security.SecurityUtils
 
+import java.io.InputStream
 import java.nio.file.Paths
+import java.security.KeyPair
 
-class SftpSimulation extends Simulation {
+class SftpSimulationKeyPairScala extends Simulation {
 
   val sftpProtocol: SftpProtocolBuilder = sftp
     .server("localhost")
     .port(2222)
-    .credentials("user", "password")
+    .keyPair("user", loadKeyPair("/data/test.key"))
     .localPath(Paths.get("./src/test/resources/data"))
     .remotePath("/tmp")
+
+  private def loadKeyPair(path: String) : KeyPair = {
+    val stream : InputStream = getClass.getResourceAsStream(path)
+    SecurityUtils.loadKeyPairIdentities(null, null, stream, FilePasswordProvider.EMPTY).iterator().next()
+  }
+
+  val source = "file_to_upload.txt"
+  val destination = "file_copied"
 
   val scn: ScenarioBuilder = scenario("SFTP Scenario")
     .exec(
       sftp("Upload a file")
-        .upload("file_to_upload"))
+        .upload(source))
     .exec(
       sftp("Copy remote file")
-        .copy("file_to_upload", "file_copied"))
+        .copy(source, destination))
     .exec(
       sftp("Delete remote file")
-        .delete("file_to_upload"))
+        .delete(source))
     .exec(
       sftp("Move remote file")
-        .move("file_copied", "file_to_upload"))
+        .move(destination, source))
     .exec(
       sftp("Delete remote file")
-        .delete("file_to_upload"))
+        .delete(source))
   setUp(scn.inject(atOnceUsers(1)).protocols(sftpProtocol))
 }

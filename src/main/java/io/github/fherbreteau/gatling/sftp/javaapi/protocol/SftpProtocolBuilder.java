@@ -3,8 +3,12 @@ package io.github.fherbreteau.gatling.sftp.javaapi.protocol;
 import io.gatling.core.protocol.Protocol;
 import io.gatling.javaapi.core.ProtocolBuilder;
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.common.NamedResource;
+import org.apache.sshd.common.config.keys.FilePasswordProvider;
 
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.security.KeyPair;
 
 public class SftpProtocolBuilder implements ProtocolBuilder {
 
@@ -26,8 +30,20 @@ public class SftpProtocolBuilder implements ProtocolBuilder {
         return new SftpProtocolBuilder(wrapped.port(port));
     }
 
-    public SftpProtocolBuilder credentials(String username, String password) {
-        return new SftpProtocolBuilder(wrapped.credentials(username, password));
+    public SftpProtocolBuilder password(String username, String password) {
+        return new SftpProtocolBuilder(wrapped.password(username, password));
+    }
+
+    public SftpProtocolBuilder keyPair(String username, InputStream stream) {
+        return new SftpProtocolBuilder(wrapped.keyPair(username, stream));
+    }
+
+    public SftpProtocolBuilder keyPair(String username, NamedResource keyResource, InputStream stream, FilePasswordProvider provider) {
+        return new SftpProtocolBuilder(wrapped.keyPair(username, keyResource, stream, provider));
+    }
+
+    public SftpProtocolBuilder keyPair(String username, KeyPair keyPair) {
+        return new SftpProtocolBuilder(wrapped.keyPair(username, keyPair));
     }
 
     public SftpProtocolBuilder localPath(Path path) {
