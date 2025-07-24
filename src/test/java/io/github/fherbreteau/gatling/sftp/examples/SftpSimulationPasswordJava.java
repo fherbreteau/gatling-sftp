@@ -21,6 +21,7 @@ public class SftpSimulationPasswordJava extends Simulation {
 
     String source = "file_to_upload.txt";
     String destination = "file_copied";
+    String absentSource = "non_existent";
 
 
     ScenarioBuilder scn = scenario("SFTP Scenario")
@@ -33,7 +34,9 @@ public class SftpSimulationPasswordJava extends Simulation {
             .exec(sftp("Move remote file")
                     .move(destination, source))
             .exec(sftp("Delete remote file")
-                    .delete(source));
+                    .delete(source))
+            .exec(sftp("Upload no existent local file")
+                    .upload(absentSource));
 
     {
         setUp(scn.injectOpen(atOnceUsers(1)).protocols(sftpProtocol));

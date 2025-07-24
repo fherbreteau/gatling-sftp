@@ -21,7 +21,7 @@ public class SftpSimulationKeyPairJava extends Simulation {
     SftpProtocolBuilder sftpProtocol = sftp
             .server("localhost")
             .port(2222)
-            .keyPair("user", getKeyPair("/data/test.key"))
+            .keyPair("user", getKeyPair("/keys/test.key"))
             .localPath(Paths.get("./src/test/resources/data"))
             .remotePath("/tmp");
 
