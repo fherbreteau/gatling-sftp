@@ -34,7 +34,10 @@ jobs:
       - name: Build with Maven
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
-        run: mvn -B clean verify
+        run: |
+          # Verify gpg secret key
+          gpg --list-secret-keys --keyid-format LONG
+          mvn -B clean verify
 
       - name: Configure Git user
         run: |
