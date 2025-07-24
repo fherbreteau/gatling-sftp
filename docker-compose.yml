@@ -1,5 +1,4 @@
 ---
-version: "2.1"
 services:
   openssh-server:
     image: lscr.io/linuxserver/openssh-server:latest
@@ -9,6 +8,12 @@ services:
       - PASSWORD_ACCESS=true
       - USER_PASSWORD=password
       - USER_NAME=user
+      - PUBLIC_KEY_DIR=/data
+      - LOG_STDOUT=true
     ports:
-      - 2222:2222
+      - "2222:2222"
+    volumes:
+      - ./src/test/resources/keys/test.key.pub:/data/test.key.pub
+      - ./src/test/resources/config:/custom-cont-init.d:ro
+
     restart: unless-stopped

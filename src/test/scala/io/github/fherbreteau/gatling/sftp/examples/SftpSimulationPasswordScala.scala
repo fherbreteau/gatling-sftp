@@ -7,30 +7,33 @@ import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocolBuilder
 
 import java.nio.file.Paths
 
-class SftpSimulation extends Simulation {
+class SftpSimulationPasswordScala extends Simulation {
 
   val sftpProtocol: SftpProtocolBuilder = sftp
     .server("localhost")
     .port(2222)
-    .credentials("user", "password")
+    .password("user", "password")
     .localPath(Paths.get("./src/test/resources/data"))
     .remotePath("/tmp")
+
+  val source = "file_to_upload.txt"
+  val destination = "file_copied"
 
   val scn: ScenarioBuilder = scenario("SFTP Scenario")
     .exec(
       sftp("Upload a file")
-        .upload("file_to_upload"))
+        .upload(source))
     .exec(
       sftp("Copy remote file")
-        .copy("file_to_upload", "file_copied"))
+        .copy(source, destination))
     .exec(
       sftp("Delete remote file")
-        .delete("file_to_upload"))
+        .delete(source))
     .exec(
       sftp("Move remote file")
-        .move("file_copied", "file_to_upload"))
+        .move(destination, source))
     .exec(
       sftp("Delete remote file")
-        .delete("file_to_upload"))
+        .delete(source))
   setUp(scn.inject(atOnceUsers(1)).protocols(sftpProtocol))
 }

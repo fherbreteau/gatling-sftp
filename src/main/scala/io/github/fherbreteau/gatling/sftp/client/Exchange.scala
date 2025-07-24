@@ -1,23 +1,24 @@
 package io.github.fherbreteau.gatling.sftp.client
 
 import com.typesafe.scalalogging.StrictLogging
-import io.gatling.commons.model.Credentials
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.CoreComponents
 import io.gatling.core.controller.throttle.Throttler
 import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import io.github.fherbreteau.gatling.sftp.client.result.{SftpFailure, SftpResponse, SftpResult}
+import io.github.fherbreteau.gatling.sftp.model.{Credentials, KeyPairAuth, PasswordAuth}
 import org.apache.sshd.client.SshClient
 import org.apache.sshd.client.auth.UserAuthFactory
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory
+import org.apache.sshd.client.auth.pubkey.UserAuthPublicKeyFactory
 import org.apache.sshd.client.session.ClientSession
 import org.apache.sshd.sftp.client.{SftpClient, SftpClientFactory}
 
 import java.time.Duration.ofSeconds
 import java.util.concurrent.{Executor, Executors}
-import scala.util.control.NonFatal
 import scala.jdk.CollectionConverters._
+import scala.util.control.NonFatal
 
 object Exchange {
 
@@ -41,8 +42,14 @@ final case class Exchange(var client: SshClient,
       // If the SshClient was closed, create a new one.
       client = SshClient.setUpDefaultClient()
     }
-    val authFactories: List[UserAuthFactory] = List(UserAuthPasswordFactory.INSTANCE)
-    client.setUserAuthFactories(authFactories.asJava)
+    credentials match {
+      case _ @ PasswordAuth(_, _) =>
+        val authFactories: List[UserAuthFactory] = List(UserAuthPasswordFactory.INSTANCE)
+        client.setUserAuthFactories(authFactories.asJava)
+      case _ @ KeyPairAuth(_, _) =>
+        val authFactories: List[UserAuthFactory] = List(UserAuthPublicKeyFactory.INSTANCE)
+        client.setUserAuthFactories(authFactories.asJava)
+    }
     client.start()
   }
 
@@ -74,7 +81,14 @@ final case class Exchange(var client: SshClient,
       logger.debug(s"Creating New Session scenario=${transaction.scenario} userId=${transaction.userId}")
       sshSession = client.connect(credentials.username, server, port)
         .verify(ofSeconds(5)).getSession
-      sshSession.addPasswordIdentity(credentials.password)
+      credentials match {
+        case _ @ PasswordAuth(_, password) =>
+          logger.debug(s"Logging using given password scenario=${transaction.scenario} userId=${transaction.userId}")
+          sshSession.addPasswordIdentity(password)
+        case _ @ KeyPairAuth(_, keyPair) =>
+          logger.debug(s"Logging using given key pair scenario=${transaction.scenario} userId=${transaction.userId}")
+          sshSession.addPublicKeyIdentity(keyPair)
+      }
       sshSession.auth()
         .verify(ofSeconds(5))
       sftpClient = SftpClientFactory.instance()
