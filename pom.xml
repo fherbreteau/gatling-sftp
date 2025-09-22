@@ -27,7 +27,7 @@
         <maven-gatling-plugin.version>4.20.0</maven-gatling-plugin.version>
 
         <!-- Dependencies Versions -->
-        <gatling.version>3.14.3</gatling.version>
+        <gatling.version>3.14.4</gatling.version>
         <apache.sshd.version>2.15.0</apache.sshd.version>
         <commons.io.version>2.20.0</commons.io.version>
         <crypto.eddsa.version>0.3.0</crypto.eddsa.version>
