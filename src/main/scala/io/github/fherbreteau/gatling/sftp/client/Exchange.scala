@@ -7,7 +7,8 @@ import io.gatling.core.controller.throttle.Throttler
 import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import io.github.fherbreteau.gatling.sftp.client.result.{SftpFailure, SftpResponse, SftpResult}
-import io.github.fherbreteau.gatling.sftp.model.{Credentials, KeyPairAuth, PasswordAuth}
+import io.github.fherbreteau.gatling.sftp.model.Authentications.{Authentication, Password}
+import io.github.fherbreteau.gatling.sftp.model.{Authentications, Credentials, KeyPairAuth, PasswordAuth}
 import org.apache.sshd.client.SshClient
 import org.apache.sshd.client.auth.UserAuthFactory
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory
@@ -22,12 +23,12 @@ import scala.util.control.NonFatal
 
 object Exchange {
 
-  def apply(server: String, port: Int, credentials: Credentials): Exchange =
+  def apply(server: String, port: Int, authType: Authentication): Exchange =
     Exchange(
       client = SshClient.setUpDefaultClient(),
       server = server,
       port = port,
-      credentials = credentials,
+      authType = authType,
       executor = Executors.newSingleThreadExecutor()
     )
 }
@@ -35,18 +36,18 @@ object Exchange {
 final case class Exchange(var client: SshClient,
                           server: String,
                           port: Int,
-                          credentials: Credentials,
+                          authType: Authentication,
                           executor: Executor) extends StrictLogging {
   def start(): Unit = {
     if (client.isClosed) {
       // If the SshClient was closed, create a new one.
       client = SshClient.setUpDefaultClient()
     }
-    credentials match {
-      case _ @ PasswordAuth(_, _) =>
+    authType match {
+      case Password =>
         val authFactories: List[UserAuthFactory] = List(UserAuthPasswordFactory.INSTANCE)
         client.setUserAuthFactories(authFactories.asJava)
-      case _ @ KeyPairAuth(_, _) =>
+      case Authentications.KeyPair =>
         val authFactories: List[UserAuthFactory] = List(UserAuthPublicKeyFactory.INSTANCE)
         client.setUserAuthFactories(authFactories.asJava)
     }
@@ -79,9 +80,10 @@ final case class Exchange(var client: SshClient,
     var sftpClient: SftpClient = null
     val result = try {
       logger.debug(s"Creating New Session scenario=${transaction.scenario} userId=${transaction.userId}")
-      sshSession = client.connect(credentials.username, server, port)
+      val credential: Credentials = transaction.sftpOperation.sftpProtocol.credentials(transaction.session)
+      sshSession = client.connect(credential.username, server, port)
         .verify(ofSeconds(5)).getSession
-      credentials match {
+      credential match {
         case _ @ PasswordAuth(_, password) =>
           logger.debug(s"Logging using given password scenario=${transaction.scenario} userId=${transaction.userId}")
           sshSession.addPasswordIdentity(password)

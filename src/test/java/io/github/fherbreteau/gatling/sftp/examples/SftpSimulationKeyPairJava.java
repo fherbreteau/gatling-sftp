@@ -1,56 +1,44 @@
 package io.github.fherbreteau.gatling.sftp.examples;
 
-import static io.gatling.javaapi.core.CoreDsl.atOnceUsers;
-import static io.gatling.javaapi.core.CoreDsl.scenario;
+import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.github.fherbreteau.gatling.sftp.javaapi.SftpDsl.sftp;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
-import java.security.KeyPair;
 
+import io.gatling.javaapi.core.FeederBuilder;
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.github.fherbreteau.gatling.sftp.javaapi.protocol.SftpProtocolBuilder;
-import org.apache.sshd.common.config.keys.FilePasswordProvider;
-import org.apache.sshd.common.util.security.SecurityUtils;
 
 public class SftpSimulationKeyPairJava extends Simulation {
 
+    // Set up Sftp protocol with key pair auth
     SftpProtocolBuilder sftpProtocol = sftp
             .server("localhost")
             .port(2222)
-            .keyPair("user", getKeyPair("/keys/test.key"))
+            .keyPair("#{username}", "#{keypair}")
             .localPath(Paths.get("./src/test/resources/data"))
             .remotePath("/tmp");
 
     String source = "file_to_upload.txt";
     String destination = "file_copied.txt";
 
+    // Load credentials from CSV
+    FeederBuilder<String> credentialsFeeder = csv("credential.csv").circular();
 
+    // Define the test scenario
     ScenarioBuilder scn = scenario("SFTP Scenario")
-            .exec(sftp("Upload a file")
-                    .upload(source))
-            .exec(sftp("Copy remote file")
-                    .copy(source, destination))
-            .exec(sftp("Delete remote file")
-                    .delete(source))
-            .exec(sftp("Move remote file")
-                    .move(destination, source))
-            .exec(sftp("Delete remote file")
-                    .delete(source));
-
-    private static KeyPair getKeyPair(String path) {
-        try (InputStream stream = SftpSimulationKeyPairJava.class.getResourceAsStream(path)) {
-            Iterable<KeyPair> keyPairs = SecurityUtils.loadKeyPairIdentities(null, null, stream, FilePasswordProvider.EMPTY);
-            return keyPairs.iterator().next();
-        } catch (IOException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
-    }
+            .exec(
+                    feed(credentialsFeeder),
+                    exec(sftp("Upload a file").upload(source)),
+                    exec(sftp("Copy remote file").copy(source, destination)),
+                    exec(sftp("Delete remote file").delete(source)),
+                    exec(sftp("Move remote file").move(destination, source)),
+                    exec(sftp("Delete remote file").delete(source))
+            );
 
     {
+        // Set up the simulation with open workload model
         setUp(scn.injectOpen(atOnceUsers(1)).protocols(sftpProtocol));
     }
 }
