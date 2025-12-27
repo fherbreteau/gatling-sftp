@@ -30,7 +30,8 @@
         <gatling.version>3.14.4</gatling.version>
         <apache.sshd.version>2.16.0</apache.sshd.version>
         <commons.io.version>2.20.0</commons.io.version>
-        <crypto.eddsa.version>0.3.0</crypto.eddsa.version>
+        <!-- Eddsa crypto -->
+        <bouncy.castle.version>1.81</bouncy.castle.version>
 
         <!-- Sonar Properties -->
         <sonar.organization>fherbreteau</sonar.organization>
@@ -72,9 +73,9 @@
 
         <!-- Ed25519 Key loading -->
         <dependency>
-            <groupId>net.i2p.crypto</groupId>
-            <artifactId>eddsa</artifactId>
-            <version>${crypto.eddsa.version}</version>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncy.castle.version}</version>
             <scope>test</scope>
             <optional>true</optional>
         </dependency>
