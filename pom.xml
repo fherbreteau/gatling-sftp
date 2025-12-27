@@ -15,8 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Maven plugins version -->
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
@@ -27,9 +26,10 @@
         <maven-gatling-plugin.version>4.20.8</maven-gatling-plugin.version>
 
         <!-- Dependencies Versions -->
-        <gatling.version>3.14.4</gatling.version>
+        <gatling.version>3.14.9</gatling.version>
         <apache.sshd.version>2.16.0</apache.sshd.version>
         <commons.io.version>2.20.0</commons.io.version>
+        <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <!-- Eddsa crypto -->
         <bouncy.castle.version>1.81</bouncy.castle.version>
 
@@ -50,6 +50,13 @@
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
             <version>${gatling.version}</version>
+        </dependency>
+
+        <!-- Jakarta Annotations -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>${jakarta.annotation.version}</version>
         </dependency>
 
         <!-- Apache Mina SSH -->
