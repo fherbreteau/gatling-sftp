@@ -20,11 +20,11 @@ public class SftpSimulationKeyPairJava extends Simulation {
             .localPath(Paths.get("./src/test/resources/data"))
             .remotePath("/tmp");
 
-    String source = "file_to_upload.txt";
-    String destination = "file_copied.txt";
-
     // Load credentials from CSV
     FeederBuilder<String> credentialsFeeder = csv("credential.csv").circular();
+
+    String source = "file_to_upload.txt";
+    String destination = "file_copied.txt";
 
     // Define the test scenario
     ScenarioBuilder scn = scenario("SFTP Scenario")

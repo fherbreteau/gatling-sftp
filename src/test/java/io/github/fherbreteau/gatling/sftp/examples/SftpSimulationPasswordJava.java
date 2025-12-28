@@ -20,12 +20,12 @@ public class SftpSimulationPasswordJava extends Simulation {
             .localPath(Paths.get("./src/test/resources/data"))
             .remotePath("/tmp");
 
+    // Load credentials from CSV
+    FeederBuilder<String> credentialsFeeder = csv("credential.csv").circular();
+
     String source = "file_to_upload.txt";
     String destination = "file_copied";
     String absentSource = "non_existent";
-
-    // Load credentials from CSV
-    FeederBuilder<String> credentialsFeeder = csv("credential.csv").circular();
 
     // Define the test scenario
     ScenarioBuilder scn = scenario("SFTP Scenario")

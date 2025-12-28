@@ -10,6 +10,7 @@ import java.nio.file.Paths
 
 class SftpSimulationPasswordScala extends Simulation {
 
+  // Set up Sftp protocol with key pair auth
   val sftpProtocol: SftpProtocolBuilder = sftp
     .server("localhost")
     .port(2222)
@@ -20,8 +21,10 @@ class SftpSimulationPasswordScala extends Simulation {
   val source = "file_to_upload.txt"
   val destination = "file_copied"
 
+  // Load credentials from CSV
   val credentialsFeeder: FeederBuilder = csv("credential.csv").circular
 
+  // Define the test scenario
   val scn: ScenarioBuilder = scenario("SFTP Scenario")
     .exec(
       feed(credentialsFeeder),
@@ -31,5 +34,7 @@ class SftpSimulationPasswordScala extends Simulation {
       exec(sftp("Move remote file").move(destination, source)),
       exec(sftp("Delete remote file").delete(source))
     )
+
+  // Set up the simulation with open workload model
   setUp(scn.inject(atOnceUsers(1)).protocols(sftpProtocol))
 }
