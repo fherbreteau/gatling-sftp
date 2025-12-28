@@ -1,16 +1,13 @@
 package io.github.fherbreteau.gatling.sftp.protocol
 
 import io.gatling.core.config.GatlingConfiguration
+import io.gatling.core.session.Expression
 import io.gatling.internal.quicklens._
-import io.github.fherbreteau.gatling.sftp.model.{KeyPairAuth, PasswordAuth}
+import io.github.fherbreteau.gatling.sftp.model.Authentications
+import io.github.fherbreteau.gatling.sftp.util.SftpHelper
 import org.apache.sshd.client.SshClient
-import org.apache.sshd.common.NamedResource
-import org.apache.sshd.common.config.keys.FilePasswordProvider
-import org.apache.sshd.common.util.security.SecurityUtils
 
-import java.io.InputStream
 import java.nio.file.Path
-import java.security.KeyPair
 import scala.language.implicitConversions
 
 object SftpProtocolBuilder {
@@ -27,14 +24,17 @@ final case class SftpProtocolBuilder(protocol: SftpProtocol) {
 
   def port(port: Int): SftpProtocolBuilder = this.modify(_.protocol.exchange.port).setTo(port)
 
-  def password(username: String, password: String): SftpProtocolBuilder = this.modify(_.protocol.exchange.credentials).setTo(PasswordAuth(username, password))
+  def password(username: Expression[String], password: Expression[String]): SftpProtocolBuilder =
+    this.modify(_.protocol.exchange.authType).setTo(Authentications.Password)
+      .modify(_.protocol.credentials).setTo(SftpHelper.buildPasswordAuth(username, password))
 
-  def keyPair(username: String, stream: InputStream): SftpProtocolBuilder = this.keyPair(username, null, stream, FilePasswordProvider.EMPTY)
+  def keyPair(username: Expression[String], keyPath: Expression[String]): SftpProtocolBuilder =
+    this.modify(_.protocol.exchange.authType).setTo(Authentications.KeyPair)
+      .modify(_.protocol.credentials).setTo(SftpHelper.buildKeyPairAuth(username, keyPath))
 
-  def keyPair(username: String, resourceKey: NamedResource, stream: InputStream, provider: FilePasswordProvider): SftpProtocolBuilder =
-    this.keyPair(username, SecurityUtils.loadKeyPairIdentities(null, resourceKey, stream, provider).iterator().next())
-
-  def keyPair(username: String, keyPair: KeyPair): SftpProtocolBuilder = this.modify(_.protocol.exchange.credentials).setTo(KeyPairAuth(username, keyPair))
+  def keyPair(username: Expression[String], keyPath: Expression[String], keyPassphrase: Expression[String]): SftpProtocolBuilder =
+    this.modify(_.protocol.exchange.authType).setTo(Authentications.KeyPair)
+      .modify(_.protocol.credentials).setTo(SftpHelper.buildKeyPairAuth(username, keyPath, keyPassphrase))
 
   def localPath(path: Path): SftpProtocolBuilder = this.localSourcePath(path).localDestinationPath(path)
 

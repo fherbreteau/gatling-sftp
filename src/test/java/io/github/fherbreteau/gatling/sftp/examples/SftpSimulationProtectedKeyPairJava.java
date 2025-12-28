@@ -10,26 +10,26 @@ import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.github.fherbreteau.gatling.sftp.javaapi.protocol.SftpProtocolBuilder;
 
-public class SftpSimulationKeyPairJava extends Simulation {
+public class SftpSimulationProtectedKeyPairJava extends Simulation {
 
     // Set up Sftp protocol with key pair auth
     SftpProtocolBuilder sftpProtocol = sftp
             .server("localhost")
             .port(2222)
-            .keyPair("#{username}", "#{keypair}")
+            .keyPair("#{username}", "#{keypair}", "#{passphrase}")
             .localPath(Paths.get("./src/test/resources/data"))
             .remotePath("/tmp");
 
     // Load credentials from CSV
-    FeederBuilder<String> credentialsFeeder = csv("credential.csv").circular();
+    FeederBuilder<String> credentialsFeeder = csv("credential2.csv").circular();
 
     String source = "file_to_upload.txt";
     String destination = "file_copied.txt";
 
     // Define the test scenario
     ScenarioBuilder scn = scenario("SFTP Scenario")
+            .feed(credentialsFeeder)
             .exec(
-                    feed(credentialsFeeder),
                     exec(sftp("Upload a file").upload(source)),
                     exec(sftp("Copy remote file").copy(source, destination)),
                     exec(sftp("Delete remote file").delete(source)),

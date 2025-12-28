@@ -3,18 +3,18 @@ package io.github.fherbreteau.gatling.sftp.examples
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.FeederBuilder
 import io.gatling.core.structure.ScenarioBuilder
-import io.github.fherbreteau.gatling.sftp.Predef._
+import io.github.fherbreteau.gatling.sftp.Predef.sftp
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocolBuilder
 
 import java.nio.file.Paths
 
-class SftpSimulationPasswordScala extends Simulation {
+class SftpSimulationProtectedKeyPairScala extends Simulation {
 
   // Set up Sftp protocol with key pair auth
   val sftpProtocol: SftpProtocolBuilder = sftp
     .server("localhost")
     .port(2222)
-    .password("#{username}", "#{password}")
+    .keyPair("#{username}", "#{keypair}", "#{passphrase}")
     .localPath(Paths.get("./src/test/resources/data"))
     .remotePath("/tmp")
 
@@ -22,12 +22,12 @@ class SftpSimulationPasswordScala extends Simulation {
   val destination = "file_copied"
 
   // Load credentials from CSV
-  val credentialsFeeder: FeederBuilder = csv("credential.csv").circular
+  val credentialsFeeder: FeederBuilder = csv("credential2.csv").circular
 
   // Define the test scenario
   val scn: ScenarioBuilder = scenario("SFTP Scenario")
+    .feed(credentialsFeeder)
     .exec(
-      feed(credentialsFeeder),
       exec(sftp("Upload a file").upload(source)),
       exec(sftp("Copy remote file").copy(source, destination)),
       exec(sftp("Delete remote file").delete(source)),

@@ -7,27 +7,30 @@ import io.gatling.core.controller.throttle.Throttler
 import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 import io.github.fherbreteau.gatling.sftp.client.result.{SftpFailure, SftpResponse, SftpResult}
+import io.github.fherbreteau.gatling.sftp.model.Authentications.{Authentication, KeyPair, Password}
 import io.github.fherbreteau.gatling.sftp.model.{Credentials, KeyPairAuth, PasswordAuth}
 import org.apache.sshd.client.SshClient
 import org.apache.sshd.client.auth.UserAuthFactory
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory
 import org.apache.sshd.client.auth.pubkey.UserAuthPublicKeyFactory
 import org.apache.sshd.client.session.ClientSession
+import org.apache.sshd.common.{SshConstants, SshException}
 import org.apache.sshd.sftp.client.{SftpClient, SftpClientFactory}
 
 import java.time.Duration.ofSeconds
 import java.util.concurrent.{Executor, Executors}
 import scala.jdk.CollectionConverters._
+import scala.util.Using
 import scala.util.control.NonFatal
 
 object Exchange {
 
-  def apply(server: String, port: Int, credentials: Credentials): Exchange =
+  def apply(server: String, port: Int, authType: Authentication): Exchange =
     Exchange(
       client = SshClient.setUpDefaultClient(),
       server = server,
       port = port,
-      credentials = credentials,
+      authType = authType,
       executor = Executors.newSingleThreadExecutor()
     )
 }
@@ -35,18 +38,18 @@ object Exchange {
 final case class Exchange(var client: SshClient,
                           server: String,
                           port: Int,
-                          credentials: Credentials,
+                          authType: Authentication,
                           executor: Executor) extends StrictLogging {
   def start(): Unit = {
     if (client.isClosed) {
       // If the SshClient was closed, create a new one.
       client = SshClient.setUpDefaultClient()
     }
-    credentials match {
-      case _ @ PasswordAuth(_, _) =>
+    authType match {
+      case Password =>
         val authFactories: List[UserAuthFactory] = List(UserAuthPasswordFactory.INSTANCE)
         client.setUserAuthFactories(authFactories.asJava)
-      case _ @ KeyPairAuth(_, _) =>
+      case KeyPair =>
         val authFactories: List[UserAuthFactory] = List(UserAuthPublicKeyFactory.INSTANCE)
         client.setUserAuthFactories(authFactories.asJava)
     }
@@ -75,13 +78,13 @@ final case class Exchange(var client: SshClient,
   private def executeOperationAsync(transaction: SftpTransaction, coreComponents: CoreComponents): Unit = {
     import coreComponents._
     val startTime = clock.nowMillis
-    var sshSession: ClientSession = null
-    var sftpClient: SftpClient = null
-    val result = try {
+    Using.Manager { use =>
       logger.debug(s"Creating New Session scenario=${transaction.scenario} userId=${transaction.userId}")
-      sshSession = client.connect(credentials.username, server, port)
-        .verify(ofSeconds(5)).getSession
-      credentials match {
+      val credential: Credentials = transaction.sftpOperation.sftpProtocol.credentials(transaction.session)
+      val holder = client.connect(credential.username, server, port)
+        .verify(ofSeconds(5))
+      val sshSession: ClientSession = use(holder.getSession)
+      credential match {
         case _ @ PasswordAuth(_, password) =>
           logger.debug(s"Logging using given password scenario=${transaction.scenario} userId=${transaction.userId}")
           sshSession.addPasswordIdentity(password)
@@ -91,8 +94,8 @@ final case class Exchange(var client: SshClient,
       }
       sshSession.auth()
         .verify(ofSeconds(5))
-      sftpClient = SftpClientFactory.instance()
-        .createSftpClient(sshSession)
+      val sftpClient: SftpClient = use(SftpClientFactory.instance()
+        .createSftpClient(sshSession))
 
       logger.debug(s"Opening SFTP Client scenario=${transaction.scenario} userId=${transaction.userId}")
       val executor = transaction.sftpOperation.build
@@ -102,17 +105,15 @@ final case class Exchange(var client: SshClient,
 
       logger.debug(s"Action ${transaction.action} successful")
       SftpResponse(transaction.action, startTime, clock.nowMillis, OK)
-    } catch {
+    }.recover {
       case NonFatal(t) =>
         logger.error(s"Failed to execute action ${transaction.action}", t)
         SftpFailure(transaction.action, startTime, clock.nowMillis, t.getMessage, KO)
-    } finally {
-      if (sftpClient != null) sftpClient.close()
-      if (sshSession != null) sshSession.close(false)
-    }
+    }.map(result => {
+      logger.debug(s"Sftp Operation completed with success ${result.status} scenario=${transaction.scenario} userId=${transaction.userId}")
+      logResult(statsEngine, transaction.session, transaction.fullRequestName, result)
+    })
 
-    logger.debug(s"Sftp Operation completed scenario=${transaction.scenario} userId=${transaction.userId}")
-    logResult(statsEngine, transaction.session, transaction.fullRequestName, result)
     transaction.next ! transaction.session
   }
 
