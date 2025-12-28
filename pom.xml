@@ -33,6 +33,9 @@
         <!-- Eddsa crypto -->
         <bouncy.castle.version>1.81</bouncy.castle.version>
 
+        <!-- Test Versions -->
+        <scalatest.version>3.2.19</scalatest.version>
+
         <!-- Sonar Properties -->
         <sonar.organization>fherbreteau</sonar.organization>
         <sonar.projectKey>fherbreteau_gatling-sftp</sonar.projectKey>
@@ -85,6 +88,14 @@
             <version>${bouncy.castle.version}</version>
             <scope>test</scope>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Test Framework -->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>${scalatest.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
