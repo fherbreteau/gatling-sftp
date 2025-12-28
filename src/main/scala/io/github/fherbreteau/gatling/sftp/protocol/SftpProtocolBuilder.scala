@@ -32,6 +32,10 @@ final case class SftpProtocolBuilder(protocol: SftpProtocol) {
     this.modify(_.protocol.exchange.authType).setTo(Authentications.KeyPair)
       .modify(_.protocol.credentials).setTo(SftpHelper.buildKeyPairAuth(username, keyPath))
 
+  def keyPair(username: Expression[String], keyPath: Expression[String], keyPassphrase: Expression[String]): SftpProtocolBuilder =
+    this.modify(_.protocol.exchange.authType).setTo(Authentications.KeyPair)
+      .modify(_.protocol.credentials).setTo(SftpHelper.buildKeyPairAuth(username, keyPath, keyPassphrase))
+
   def localPath(path: Path): SftpProtocolBuilder = this.localSourcePath(path).localDestinationPath(path)
 
   def localSourcePath(sourcePath: Path): SftpProtocolBuilder = this.modify(_.protocol.localSourcePath).setTo(Some(sourcePath))

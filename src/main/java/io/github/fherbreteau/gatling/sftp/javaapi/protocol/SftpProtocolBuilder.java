@@ -36,6 +36,11 @@ public class SftpProtocolBuilder implements ProtocolBuilder {
         return new SftpProtocolBuilder(wrapped.keyPair(toStringExpression(username), toStringExpression(keyPath)));
     }
 
+    public SftpProtocolBuilder keyPair(String username, String keyPath, String keyPassphrase) {
+        return new SftpProtocolBuilder(wrapped.keyPair(toStringExpression(username), toStringExpression(keyPath),
+                toStringExpression(keyPassphrase)));
+    }
+
     public SftpProtocolBuilder localPath(Path path) {
         return localSourcePath(path).localDestinationPath(path);
     }

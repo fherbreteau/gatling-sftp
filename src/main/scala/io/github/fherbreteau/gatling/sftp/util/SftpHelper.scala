@@ -25,10 +25,25 @@ object SftpHelper extends StrictLogging {
         keyPairValue <- keyPath(session).map(path => loadKeyPair(path))
       } yield KeyPairAuth(usernameValue, keyPairValue)
 
+
+  def buildKeyPairAuth(username: Expression[String], keyPath: Expression[String], keyPassphrase: Expression[String]): Expression[Credentials] =
+    (session: Session) =>
+      for {
+        usernameValue <- username(session)
+        keyPassphraseValue <- keyPassphrase(session)
+        keyPairValue <- keyPath(session).map(path => loadKeyPair(path, keyPassphraseValue))
+      } yield KeyPairAuth(usernameValue, keyPairValue)
+
   private def loadKeyPair(path: String) : KeyPair =
     Using.Manager { use =>
       val stream: InputStream = use(getClass.getResourceAsStream(path))
       SecurityUtils.loadKeyPairIdentities(null, null, stream, FilePasswordProvider.EMPTY).iterator().next()
+    }.get
+
+  private def loadKeyPair(path: String, keyPassphrase: String) : KeyPair =
+    Using.Manager { use =>
+      val stream: InputStream = use(getClass.getResourceAsStream(path))
+      SecurityUtils.loadKeyPairIdentities(null, null, stream, FilePasswordProvider.of(keyPassphrase)).iterator().next()
     }.get
 
 }
