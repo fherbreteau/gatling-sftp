@@ -25,6 +25,10 @@
         <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
         <maven-gatling-plugin.version>4.21.5</maven-gatling-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-sonar-plugin.version>5.5.0.6356</maven-sonar-plugin.version>
+        <maven-scalatest-plugin.version>2.2.0</maven-scalatest-plugin.version>
+        <maven-jacoco-plugin.version>0.8.14</maven-jacoco-plugin.version>
 
         <!-- Dependencies Versions -->
         <gatling.version>3.15.0</gatling.version>
@@ -34,9 +38,10 @@
         <bouncy.castle.version>1.83</bouncy.castle.version>
 
         <!-- Test dependencies -->
+        <junit-jupiter.version>6.0.3</junit-jupiter.version>
+        <assertj.version>3.27.7</assertj.version>
         <scalatest.version>3.2.18</scalatest.version>
         <scalatestplus-mockito.version>3.2.18.0</scalatestplus-mockito.version>
-        <scalatest-maven-plugin.version>2.2.0</scalatest-maven-plugin.version>
 
         <!-- Sonar Properties -->
         <sonar.organization>fherbreteau</sonar.organization>
@@ -87,6 +92,17 @@
 
         <!-- Test dependencies -->
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.13</artifactId>
             <version>${scalatest.version}</version>
@@ -101,6 +117,15 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${maven-sonar-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -108,10 +133,16 @@
                 <version>${maven-scala-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>scala-compile</id>
+                        <id>scala-sources</id>
                         <phase>process-sources</phase>
                         <goals>
                             <goal>add-source</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
                             <goal>compile</goal>
                         </goals>
                         <configuration>
@@ -162,10 +193,17 @@
                 <artifactId>gatling-maven-plugin</artifactId>
                 <version>${maven-gatling-plugin.version}</version>
             </plugin>
+            <!-- disable surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+            <!-- enable scalatest -->
             <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
-                <version>${scalatest-maven-plugin.version}</version>
+                <version>${maven-scalatest-plugin.version}</version>
                 <configuration>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <junitxml>.</junitxml>
@@ -176,6 +214,29 @@
                         <goals>
                             <goal>test</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${maven-jacoco-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <formats>XML</formats>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
