@@ -31,7 +31,7 @@
         <commons.io.version>2.21.0</commons.io.version>
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <!-- Eddsa crypto -->
-        <bouncy.castle.version>1.81</bouncy.castle.version>
+        <bouncy.castle.version>1.83</bouncy.castle.version>
 
         <!-- Sonar Properties -->
         <sonar.organization>fherbreteau</sonar.organization>
