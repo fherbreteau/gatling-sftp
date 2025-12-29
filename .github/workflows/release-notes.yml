@@ -1,0 +1,25 @@
+name: Create GitHub Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Create GitHub Release with Auto-Generated Notes
+        uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # version v1.20.0
+        with:
+          tag: ${{ github.ref_name }}
+          name: Gatling SFTP ${{ github.ref_name }}
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
