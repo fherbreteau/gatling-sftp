@@ -28,7 +28,6 @@
         <!-- Dependencies Versions -->
         <gatling.version>3.14.9</gatling.version>
         <apache.sshd.version>2.16.0</apache.sshd.version>
-        <commons.io.version>2.21.0</commons.io.version>
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <!-- Eddsa crypto -->
         <bouncy.castle.version>1.83</bouncy.castle.version>
@@ -50,6 +49,7 @@
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
             <version>${gatling.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Jakarta Annotations -->
@@ -71,19 +71,11 @@
             <version>${apache.sshd.version}</version>
         </dependency>
 
-        <!-- Commons io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
-        </dependency>
-
         <!-- Ed25519 Key loading -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
             <version>${bouncy.castle.version}</version>
-            <scope>test</scope>
             <optional>true</optional>
         </dependency>
     </dependencies>

@@ -21,8 +21,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+
       - name: Build with Maven
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        run: mvn -B verify
+
+      - name: Sonar check with Maven
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar  -Dgpg.skip
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
