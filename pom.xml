@@ -143,6 +143,7 @@
                 <configuration>
                     <scmCommentPrefix>[ci skip]</scmCommentPrefix>
                     <tagNameFormat>@{project.version}</tagNameFormat>
+                    <arguments>-Dmaven.javadoc.skip=true</arguments>
                 </configuration>
             </plugin>
             <plugin>
