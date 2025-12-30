@@ -29,8 +29,8 @@ public class SftpSimulationPasswordJava extends Simulation {
 
     // Define the test scenario
     ScenarioBuilder scn = scenario("SFTP Scenario")
+            .feed(credentialsFeeder)
             .exec(
-                    feed(credentialsFeeder),
                     exec(sftp("Upload a file").upload(source)),
                     exec(sftp("Copy remote file").copy(source, destination)),
                     exec(sftp("Delete remote file").delete(source)),

@@ -25,14 +25,15 @@ class SftpSimulationKeyPairScala extends Simulation {
   val credentialsFeeder: FeederBuilder = csv("credential.csv").circular
 
   // Define the test scenario
-  val scn: ScenarioBuilder = scenario("SFTP Scenario")    .exec(
-    feed(credentialsFeeder),
-    exec(sftp("Upload a file").upload(source)),
-    exec(sftp("Copy remote file").copy(source, destination)),
-    exec(sftp("Delete remote file").delete(source)),
-    exec(sftp("Move remote file").move(destination, source)),
-    exec(sftp("Delete remote file").delete(source))
-  )
+  val scn: ScenarioBuilder = scenario("SFTP Scenario")
+    .feed(credentialsFeeder)
+    .exec(
+      exec(sftp("Upload a file").upload(source)),
+      exec(sftp("Copy remote file").copy(source, destination)),
+      exec(sftp("Delete remote file").delete(source)),
+      exec(sftp("Move remote file").move(destination, source)),
+      exec(sftp("Delete remote file").delete(source))
+    )
 
   // Set up the simulation with open workload model
   setUp(scn.inject(atOnceUsers(1)).protocols(sftpProtocol))
