@@ -1,4 +1,6 @@
 name: Create GitHub Release
+permissions:
+  contents: write
 
 on:
   push:
@@ -8,9 +10,7 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
+    if: github.repository == 'fherbreteau/gatling-sftp'
 
     steps:
       - name: Checkout Code

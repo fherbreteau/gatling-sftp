@@ -7,10 +7,8 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'fherbreteau/gatling-sftp'
     runs-on: ubuntu-latest
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v6
@@ -38,11 +36,12 @@ jobs:
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
         run: |
-          mvn -B clean verify
+          mvn -B clean verify -P release
 
       - name: Publish to Central Repository
         env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
-        run: mvn -B release:prepare release:perform
+        run: mvn -B release:prepare release:perform -P release
