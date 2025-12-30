@@ -34,7 +34,7 @@ jobs:
         run: mvn -B verify
 
       - name: Sonar check with Maven
-        if: github.repository == 'fherbreteau/gatling-sftp'
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
