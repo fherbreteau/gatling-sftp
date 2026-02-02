@@ -16,7 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Maven plugins version -->
         <maven.compiler.release>${java.version}</maven.compiler.release>
-        <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
         <maven-scala-plugin.version>4.9.8</maven-scala-plugin.version>
