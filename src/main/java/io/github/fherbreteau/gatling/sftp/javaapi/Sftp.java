@@ -24,10 +24,20 @@ public class Sftp {
 
     /**
      * Define a list command.
+     * @param directory the directory to list, expressed as a Gatling Expression Language String
      * @return a new instance of SftpActionBuilder
      */
-    public SftpActionBuilder ls() {
-        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).ls());
+    public SftpActionBuilder ls(@Nonnull String directory) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).ls(Expressions.toStringExpression(directory)));
+    }
+
+    /**
+     * Define a list command.
+     * @param directory the directory to list, expressed as a function
+     * @return a new instance of SftpActionBuilder
+     */
+    public SftpActionBuilder ls(@Nonnull Function<io.gatling.javaapi.core.Session, String> directory) {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).ls(Expressions.javaFunctionToExpression(directory)));
     }
 
     /**

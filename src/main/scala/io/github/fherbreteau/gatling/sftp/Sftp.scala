@@ -6,7 +6,7 @@ import io.github.fherbreteau.gatling.sftp.client.SftpActions._
 
 case class Sftp(operationName: Expression[String]) {
 
-  def ls(): SftpActionBuilder = action(EmptyStringExpressionSuccess, EmptyStringExpressionSuccess, Ls)
+  def ls(directory: Expression[String]): SftpActionBuilder = action(directory, EmptyStringExpressionSuccess, Ls)
 
   def mkdir(directory: Expression[String]): SftpActionBuilder = action(directory, EmptyStringExpressionSuccess, Mkdir)
 
