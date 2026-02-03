@@ -23,6 +23,14 @@ public class Sftp {
     }
 
     /**
+     * Define a list command.
+     * @return a new instance of SftpActionBuilder
+     */
+    public SftpActionBuilder ls() {
+        return new SftpActionBuilder(new io.github.fherbreteau.gatling.sftp.Sftp(name).ls());
+    }
+
+    /**
      * Define a mkdir command.
      * @param directory the directory to create, expressed as a Gatling Expression Language String
      * @return a new instance of SftpActionBuilder
