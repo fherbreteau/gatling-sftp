@@ -24,7 +24,7 @@
         <maven-deploy-plugin.version>1.7.0</maven-deploy-plugin.version>
         <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
-        <maven-gatling-plugin.version>4.20.16</maven-gatling-plugin.version>
+        <maven-gatling-plugin.version>4.21.0</maven-gatling-plugin.version>
 
         <!-- Dependencies Versions -->
         <gatling.version>3.14.9</gatling.version>
