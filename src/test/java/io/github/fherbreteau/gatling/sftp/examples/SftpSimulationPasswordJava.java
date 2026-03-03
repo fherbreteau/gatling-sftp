@@ -23,6 +23,7 @@ public class SftpSimulationPasswordJava extends Simulation {
     // Load credentials from CSV
     FeederBuilder<String> credentialsFeeder = csv("credential.csv").circular();
 
+    String remotePath = "/tmp";
     String source = "file_to_upload.txt";
     String destination = "file_copied";
     String absentSource = "non_existent";
@@ -31,7 +32,7 @@ public class SftpSimulationPasswordJava extends Simulation {
     ScenarioBuilder scn = scenario("SFTP Scenario")
             .feed(credentialsFeeder)
             .exec(
-                    exec(sftp("List remote directory").ls(destination)),
+                    exec(sftp("List remote directory").ls(remotePath)),
                     exec(sftp("Upload a file").upload(source)),
                     exec(sftp("Copy remote file").copy(source, destination)),
                     exec(sftp("Delete remote file").delete(source)),
