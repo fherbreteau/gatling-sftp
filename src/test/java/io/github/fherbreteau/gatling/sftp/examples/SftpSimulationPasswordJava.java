@@ -31,7 +31,7 @@ public class SftpSimulationPasswordJava extends Simulation {
     ScenarioBuilder scn = scenario("SFTP Scenario")
             .feed(credentialsFeeder)
             .exec(
-                    exec(sftp("List remote directory").ls()),
+                    exec(sftp("List remote directory").ls(destination)),
                     exec(sftp("Upload a file").upload(source)),
                     exec(sftp("Copy remote file").copy(source, destination)),
                     exec(sftp("Delete remote file").delete(source)),
