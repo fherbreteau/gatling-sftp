@@ -3,7 +3,7 @@ package io.github.fherbreteau.gatling.sftp.client
 import io.gatling.commons.validation.Validation
 import io.gatling.core.Predef.Session
 import io.gatling.core.session.Expression
-import io.github.fherbreteau.gatling.sftp.client.SftpActions.{Action, Copy, Delete, Download, Mkdir, Move, RmDir, Upload}
+import io.github.fherbreteau.gatling.sftp.client.SftpActions.{Action, Ls, Copy, Delete, Download, Mkdir, Move, RmDir, Upload}
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocol
 import org.apache.sshd.common.util.io.IoUtils
 import org.apache.sshd.sftp.client.SftpClient
@@ -37,6 +37,9 @@ final case class SftpOperation(operationName: String,
     val remoteSourcePath = sftpProtocol.remoteSource(definition.source)
     val remoteDestPath = sftpProtocol.remoteDestination(definition.destination)
     definition.action match {
+      case Ls => client => {
+        client.readDir(remoteSourcePath)
+      }
       case Move => client => {
         client.rename(remoteSourcePath, remoteDestPath)
       }

@@ -18,6 +18,7 @@ class SftpSimulationPasswordScala extends Simulation {
     .localPath(Paths.get("./src/test/resources/data"))
     .remotePath("/tmp")
 
+  val remotePath = "/tmp"
   val source = "file_to_upload.txt"
   val destination = "file_copied"
 
@@ -28,6 +29,7 @@ class SftpSimulationPasswordScala extends Simulation {
   val scn: ScenarioBuilder = scenario("SFTP Scenario")
     .feed(credentialsFeeder)
     .exec(
+      exec(sftp("List remote directory").ls(remotePath)),
       exec(sftp("Upload a file").upload(source)),
       exec(sftp("Copy remote file").copy(source, destination)),
       exec(sftp("Delete remote file").delete(source)),
