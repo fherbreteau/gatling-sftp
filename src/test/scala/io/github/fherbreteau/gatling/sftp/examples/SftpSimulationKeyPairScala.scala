@@ -21,6 +21,7 @@ class SftpSimulationKeyPairScala extends Simulation {
   val remotePath = "/tmp"
   val source = "file_to_upload.txt"
   val destination = "file_copied"
+  val folder = "folder"
 
   // Load credentials from CSV
   val credentialsFeeder: FeederBuilder = csv("credential.csv").circular
@@ -34,7 +35,10 @@ class SftpSimulationKeyPairScala extends Simulation {
       exec(sftp("Copy remote file").copy(source, destination)),
       exec(sftp("Delete remote file").delete(source)),
       exec(sftp("Move remote file").move(destination, source)),
-      exec(sftp("Delete remote file").delete(source))
+      exec(sftp("Download remote file").download(source)),
+      exec(sftp("Delete remote file").delete(source)),
+      exec(sftp("Create a remote dir").mkdir(folder)),
+      exec(sftp("Delete a remote dir").rmdir(folder))
     )
 
   // Set up the simulation with open workload model

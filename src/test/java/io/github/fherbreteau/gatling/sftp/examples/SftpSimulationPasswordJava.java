@@ -27,6 +27,7 @@ public class SftpSimulationPasswordJava extends Simulation {
     String source = "file_to_upload.txt";
     String destination = "file_copied";
     String absentSource = "non_existent";
+    String folder = "folder";
 
     // Define the test scenario
     ScenarioBuilder scn = scenario("SFTP Scenario")
@@ -37,7 +38,10 @@ public class SftpSimulationPasswordJava extends Simulation {
                     exec(sftp("Copy remote file").copy(source, destination)),
                     exec(sftp("Delete remote file").delete(source)),
                     exec(sftp("Move remote file").move(destination, source)),
+                    exec(sftp("Download remote file").download(source)),
                     exec(sftp("Delete remote file").delete(source)),
+                    exec(sftp("Create a remote dir").mkdir(folder)),
+                    exec(sftp("Delete a remote dir").rmdir(folder)),
                     exec(sftp("Upload no existent local file").upload(absentSource))
             );
 
