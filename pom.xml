@@ -33,11 +33,6 @@
         <!-- Eddsa crypto -->
         <bouncy.castle.version>1.83</bouncy.castle.version>
 
-        <!-- Test dependencies -->
-        <scalatest.version>3.2.18</scalatest.version>
-        <scalatestplus-mockito.version>3.2.18.0</scalatestplus-mockito.version>
-        <scalatest-maven-plugin.version>2.2.0</scalatest-maven-plugin.version>
-
         <!-- Sonar Properties -->
         <sonar.organization>fherbreteau</sonar.organization>
         <sonar.projectKey>fherbreteau_gatling-sftp</sonar.projectKey>
@@ -83,20 +78,6 @@
             <artifactId>bcprov-jdk18on</artifactId>
             <version>${bouncy.castle.version}</version>
             <optional>true</optional>
-        </dependency>
-
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.13</artifactId>
-            <version>${scalatest.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scalatestplus</groupId>
-            <artifactId>mockito-5-10_2.13</artifactId>
-            <version>${scalatestplus-mockito.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -161,23 +142,6 @@
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
                 <version>${maven-gatling-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest-maven-plugin</artifactId>
-                <version>${scalatest-maven-plugin.version}</version>
-                <configuration>
-                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                    <junitxml>.</junitxml>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

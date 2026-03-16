@@ -20,14 +20,3 @@
 /.vscode/
 /.metals/
 /.bloop/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Environment
-.env
-.env.*
-
-# Logs
-*.log
