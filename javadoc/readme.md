@@ -1,16 +1,20 @@
-# Plugin for SFTP performance testing in Gatling (3.15.x)
+# Plugin for support performance testing with SFTP in Gatling (3.15.x)
 
 ## Getting Started
 
-This plugin is currently available for Scala 2.13.
+Plugin is currently available for Scala 2.13.
 
-Add the plugin as a dependency in your test project. In your `build.sbt`:
+You may add plugin as dependency in project with your tests. Add this to your `pom.xml`:
 
-```scala
-libraryDependencies += "io.github.fherbreteau" %% "gatling-sftp" % "<version>" % Test
+```xml
+<dependency>
+    <groupId>io.github.fherbreteau</groupId>
+    <artifactId>gatling-sftp</artifactId>
+    <version>0.0.12-SNAPSHOT</version>
+    <scope>test</scope>
+</dependency>
 ```
 
 ## Example Scenarios
 
-- **Scala** -- [Sample Simulations](src/test/scala/io/github/fherbreteau/gatling/sftp/examples)
-- **Java** -- [Sample Simulations](src/test/java/io/github/fherbreteau/gatling/sftp/examples)
+See the [examples](../src/test/scala/io/github/fherbreteau/gatling/sftp/examples/) directory for sample simulations using password and key-pair authentication.
