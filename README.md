@@ -7,20 +7,43 @@ A Gatling plugin for SFTP performance testing. Currently available for Scala 2.1
 
 ## Getting Started
 
-This plugin is currently available for Scala 2.13.
+This plugin is currently available for Scala 2.13, Java 17, Kotlin.
+
+You may add plugin as dependency in project with your tests.
 
 ### SBT
 
-Add the plugin as a dependency in your test project. In your `build.sbt`:
+Write this to your `build.sbt`:
 
 ```scala
 libraryDependencies += "io.github.fherbreteau" %% "gatling-sftp" % "<version>" % Test
+```
+### Maven
+
+Write this to your dependencies block in your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.github.fherbreteau</groupId>
+    <artifactId>gatling-sftp</artifactId>
+    <version>${version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+### Gradle
+
+Write this to your dependencies block in your `build.gradle`:
+
+```kotlin
+gatling("io.github.fherbreteau:gatling-sftp:<version>")
 ```
 
 ## Example Scenarios
 
 - **Scala** -- [Sample Simulations](src/test/scala/io/github/fherbreteau/gatling/sftp/examples)
 - **Java** -- [Sample Simulations](src/test/java/io/github/fherbreteau/gatling/sftp/examples)
+- **Kotlin** -- [Sample Simulations](src/test/kotlin/io/github/fherbreteau/gatling/sftp/examples)
 
 ## Testing
 
