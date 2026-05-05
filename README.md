@@ -3,7 +3,7 @@
 ![Build](https://github.com/fherbreteau/gatling-sftp/actions/workflows/ci.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fherbreteau_gatling-sftp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fherbreteau_gatling-sftp)
 
-A Gatling plugin for SFTP performance testing. Currently available for Scala 2.13 and compatible with Gatling 3.15.x.
+A Gatling plugin that adds SFTP protocol support for performance testing (compatible with Gatling 3.15.x).
 
 ## Getting Started
 
