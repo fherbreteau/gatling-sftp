@@ -36,7 +36,7 @@
         <apache.sshd.version>2.17.1</apache.sshd.version>
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <!-- Eddsa crypto -->
-        <bouncy.castle.version>1.83</bouncy.castle.version>
+        <bouncy.castle.version>1.84</bouncy.castle.version>
 
         <!-- Test dependencies -->
         <junit-jupiter.version>6.0.3</junit-jupiter.version>
