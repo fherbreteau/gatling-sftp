@@ -5,7 +5,7 @@ import io.github.fherbreteau.gatling.sftp.client.SftpActions._
 import io.github.fherbreteau.gatling.sftp.client._
 import io.github.fherbreteau.gatling.sftp.model.{Authentications, PasswordAuth}
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocol
-import org.apache.sshd.client.SshClient
+import org.apache.sshd.client.{ClientBuilder, SshClient}
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory
 import org.apache.sshd.server.SshServer
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider
@@ -68,7 +68,7 @@ class SftpIntegrationSpec extends AnyFunSpec with Matchers with BeforeAndAfterAl
       localDestPath: Option[Path] = None
   ): SftpProtocol = {
     SftpProtocol(
-      exchange = Exchange(null, "localhost", serverPort, Authentications.Password, null),
+      exchange = Exchange(ClientBuilder.builder(), "localhost", serverPort, Authentications.Password, null),
       credentials = _ => Success(PasswordAuth("testuser", "testpass")),
       localSourcePath = localSourcePath,
       localDestinationPath = localDestPath,
