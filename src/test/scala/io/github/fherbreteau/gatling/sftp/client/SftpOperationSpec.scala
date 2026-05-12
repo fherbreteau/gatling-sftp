@@ -4,9 +4,9 @@ import io.gatling.commons.validation.Success
 import io.github.fherbreteau.gatling.sftp.client.SftpActions._
 import io.github.fherbreteau.gatling.sftp.model.{Authentications, PasswordAuth}
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocol
+import org.apache.sshd.client.ClientBuilder
 import org.apache.sshd.sftp.client.SftpClient
 import org.apache.sshd.sftp.client.SftpClient.OpenMode
-import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -36,7 +36,7 @@ class SftpOperationSpec extends AnyFunSpec with Matchers with MockitoSugar with 
       remoteDestPath: Option[String] = None
   ): SftpProtocol = {
     SftpProtocol(
-      exchange = Exchange(null, "localhost", 22, Authentications.Password, null),
+      exchange = Exchange(ClientBuilder.builder(), "localhost", 22, Authentications.Password, null),
       credentials = _ => Success(PasswordAuth("user", "pass")),
       localSourcePath = localSourcePath,
       localDestinationPath = localDestPath,

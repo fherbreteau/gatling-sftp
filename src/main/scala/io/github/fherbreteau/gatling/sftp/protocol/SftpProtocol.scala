@@ -26,7 +26,7 @@ object SftpProtocol extends StrictLogging {
     }
   }
 
-  def apply(configuration: GatlingConfiguration): SftpProtocol =
+  def apply(@annotation.unused configuration: GatlingConfiguration): SftpProtocol =
     new SftpProtocol(
       exchange = Exchange(
         server = "localhost",

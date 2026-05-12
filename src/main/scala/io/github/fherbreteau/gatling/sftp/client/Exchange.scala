@@ -9,12 +9,11 @@ import io.gatling.core.stats.StatsEngine
 import io.github.fherbreteau.gatling.sftp.client.result.{SftpFailure, SftpResponse, SftpResult}
 import io.github.fherbreteau.gatling.sftp.model.Authentications.{Authentication, KeyPair, Password}
 import io.github.fherbreteau.gatling.sftp.model.{Credentials, KeyPairAuth, PasswordAuth}
-import org.apache.sshd.client.SshClient
+import org.apache.sshd.client.{ClientBuilder, SshClient}
 import org.apache.sshd.client.auth.UserAuthFactory
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory
 import org.apache.sshd.client.auth.pubkey.UserAuthPublicKeyFactory
 import org.apache.sshd.client.session.ClientSession
-import org.apache.sshd.common.{SshConstants, SshException}
 import org.apache.sshd.sftp.client.{SftpClient, SftpClientFactory}
 
 import java.time.Duration.ofSeconds
@@ -27,7 +26,7 @@ object Exchange {
 
   def apply(server: String, port: Int, authType: Authentication): Exchange =
     Exchange(
-      client = SshClient.setUpDefaultClient(),
+      clientBuilder = ClientBuilder.builder(),
       server = server,
       port = port,
       authType = authType,
@@ -35,15 +34,18 @@ object Exchange {
     )
 }
 
-final case class Exchange(var client: SshClient,
+final case class Exchange(clientBuilder: ClientBuilder,
                           server: String,
                           port: Int,
                           authType: Authentication,
                           executor: Executor) extends StrictLogging {
+
+  private var client : SshClient = clientBuilder.build()
+
   def start(): Unit = {
     if (client.isClosed) {
       // If the SshClient was closed, create a new one.
-      client = SshClient.setUpDefaultClient()
+      client = clientBuilder.build()
     }
     authType match {
       case Password =>
@@ -112,7 +114,7 @@ final case class Exchange(var client: SshClient,
     }.map(result => {
       logger.debug(s"Sftp Operation completed with success ${result.status} scenario=${transaction.scenario} userId=${transaction.userId}")
       logResult(statsEngine, transaction.session, transaction.fullRequestName, result)
-    })
+    }).get
 
     transaction.next ! transaction.session
   }
