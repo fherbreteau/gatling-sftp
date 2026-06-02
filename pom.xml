@@ -25,7 +25,7 @@
         <maven-deploy-plugin.version>1.7.0</maven-deploy-plugin.version>
         <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-        <maven-gatling-plugin.version>4.21.6</maven-gatling-plugin.version>
+        <maven-gatling-plugin.version>4.21.7</maven-gatling-plugin.version>
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-sonar-plugin.version>5.6.0.6792</maven-sonar-plugin.version>
         <maven-scalatest-plugin.version>2.2.0</maven-scalatest-plugin.version>
