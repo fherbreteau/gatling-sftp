@@ -11,7 +11,7 @@ import org.scalatestplus.mockito.MockitoSugar
 class SftpTransactionSpec extends AnyFunSpec with Matchers with MockitoSugar {
 
   private val protocol = SftpProtocol(
-    exchange = Exchange(null, "sftp.example.com", 2222, Authentications.Password, null),
+      exchange = Exchange("sftp.example.com", 2222, Authentications.Password),
     credentials = _ => Success(PasswordAuth("user", "pass")),
     localSourcePath = None,
     localDestinationPath = None,

@@ -14,7 +14,6 @@ import org.apache.sshd.client.auth.UserAuthFactory
 import org.apache.sshd.client.auth.password.UserAuthPasswordFactory
 import org.apache.sshd.client.auth.pubkey.UserAuthPublicKeyFactory
 import org.apache.sshd.client.session.ClientSession
-import org.apache.sshd.common.{SshConstants, SshException}
 import org.apache.sshd.sftp.client.{SftpClient, SftpClientFactory}
 
 import java.time.Duration.ofSeconds
@@ -31,29 +30,55 @@ object Exchange {
       server = server,
       port = port,
       authType = authType,
-      executor = Executors.newSingleThreadExecutor()
+      executor = Executors.newSingleThreadExecutor(),
+      enableSessionPooling = false,
+      maxPooledSessions = 5
+    )
+
+  def apply(server: String, port: Int, authType: Authentication, threadPoolSize: Int): Exchange =
+    Exchange(
+      client = SshClient.setUpDefaultClient(),
+      server = server,
+      port = port,
+      authType = authType,
+      executor = Executors.newFixedThreadPool(threadPoolSize),
+      enableSessionPooling = false,
+      maxPooledSessions = 5
     )
 }
 
-final case class Exchange(var client: SshClient,
+final case class Exchange(client: SshClient,
                           server: String,
                           port: Int,
                           authType: Authentication,
-                          executor: Executor) extends StrictLogging {
-  def start(): Unit = {
-    if (client.isClosed) {
+                          executor: Executor,
+                          enableSessionPooling: Boolean,
+                          maxPooledSessions: Int) extends StrictLogging {
+  private def maskSensitiveInfo(message: String): String = {
+    message
+      .replaceAll("password[^\\w]*=.*(?=\\s|$)", "password=***")
+      .replaceAll("passphrase[^\\w]*=.*(?=\\s|$)", "passphrase=***")
+      .replaceAll("secret[^\\w]*=.*(?=\\s|$)", "secret=***")
+      .replaceAll("key[^\\w]*=.*(?=\\s|$)", "key=***")
+  }
+  def start(): Exchange = {
+    val currentClient = if (client.isClosed) {
       // If the SshClient was closed, create a new one.
-      client = SshClient.setUpDefaultClient()
+      SshClient.setUpDefaultClient()
+    } else {
+      client
     }
+
     authType match {
       case Password =>
         val authFactories: List[UserAuthFactory] = List(UserAuthPasswordFactory.INSTANCE)
-        client.setUserAuthFactories(authFactories.asJava)
+        currentClient.setUserAuthFactories(authFactories.asJava)
       case KeyPair =>
         val authFactories: List[UserAuthFactory] = List(UserAuthPublicKeyFactory.INSTANCE)
-        client.setUserAuthFactories(authFactories.asJava)
+        currentClient.setUserAuthFactories(authFactories.asJava)
     }
-    client.start()
+    currentClient.start()
+    this.copy(client = currentClient)
   }
 
   def stop(): Unit = client.stop()
@@ -107,8 +132,8 @@ final case class Exchange(var client: SshClient,
       SftpResponse(transaction.action, startTime, clock.nowMillis, OK)
     }.recover {
       case NonFatal(t) =>
-        logger.error(s"Failed to execute action ${transaction.action}", t)
-        SftpFailure(transaction.action, startTime, clock.nowMillis, t.getMessage, KO)
+        logger.error(maskSensitiveInfo(s"Failed to execute action ${transaction.action}: ${t.getMessage}"), t)
+        SftpFailure(transaction.action, startTime, clock.nowMillis, maskSensitiveInfo(t.getMessage), KO)
     }.map(result => {
       logger.debug(s"Sftp Operation completed with success ${result.status} scenario=${transaction.scenario} userId=${transaction.userId}")
       logResult(statsEngine, transaction.session, transaction.fullRequestName, result)
