@@ -41,6 +41,7 @@
         <!-- Test dependencies -->
         <junit-jupiter.version>6.1.0</junit-jupiter.version>
         <assertj.version>3.27.7</assertj.version>
+        <mockito.version>5.23.0</mockito.version>
         <scalatest.version>3.2.20</scalatest.version>
         <scalatestplus-mockito.version>3.2.18.0</scalatestplus-mockito.version>
 
@@ -109,8 +110,20 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>        <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.13</artifactId>
             <version>${scalatest.version}</version>
