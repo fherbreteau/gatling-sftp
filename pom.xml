@@ -29,7 +29,7 @@
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <maven-sonar-plugin.version>5.7.0.6970</maven-sonar-plugin.version>
         <maven-scalatest-plugin.version>2.2.0</maven-scalatest-plugin.version>
-        <maven-jacoco-plugin.version>0.8.14</maven-jacoco-plugin.version>
+        <maven-jacoco-plugin.version>0.8.15</maven-jacoco-plugin.version>
 
         <!-- Dependencies Versions -->
         <gatling.version>3.15.1</gatling.version>
