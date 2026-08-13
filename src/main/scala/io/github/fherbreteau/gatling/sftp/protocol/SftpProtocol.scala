@@ -18,7 +18,7 @@ object SftpProtocol extends StrictLogging {
     override def protocolClass: Class[Protocol] = classOf[SftpProtocol].asInstanceOf[Class[Protocol]]
 
     override def defaultProtocolValue(configuration: GatlingConfiguration): SftpProtocol =
-      throw new IllegalArgumentException("Can't provide a default value for ImportProtocol")
+      throw new IllegalArgumentException("SFTP protocol requires explicit configuration. Please provide server details, authentication method, and credentials.")
 
     override def newComponents(coreComponents: CoreComponents): SftpProtocol => SftpComponents = {
 

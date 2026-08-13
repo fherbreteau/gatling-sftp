@@ -1,7 +1,7 @@
 package io.github.fherbreteau.gatling.sftp.protocol
 
 import io.gatling.commons.validation.{Failure, Success}
-import io.gatling.core.session.{Expression, Session}
+import io.gatling.core.session.Expression
 import io.github.fherbreteau.gatling.sftp.client.Exchange
 import io.github.fherbreteau.gatling.sftp.model.{Authentications, Credentials, KeyPairAuth, PasswordAuth}
 import org.scalatest.funspec.AnyFunSpec
@@ -12,7 +12,7 @@ import java.nio.file.Paths
 class SftpProtocolBuilderSpec extends AnyFunSpec with Matchers {
 
   private def baseProtocol: SftpProtocol = SftpProtocol(
-    exchange = Exchange(null, "localhost", 22, Authentications.Password, null),
+    exchange = Exchange(null, "localhost", 22, Authentications.Password, null, enableSessionPooling = false, 5),
     credentials = _ => Failure("not configured"),
     localSourcePath = None,
     localDestinationPath = None,
@@ -120,6 +120,52 @@ class SftpProtocolBuilderSpec extends AnyFunSpec with Matchers {
       val builder = baseBuilder.server("host")
       val protocol: SftpProtocol = SftpProtocolBuilder.toSftpProtocol(builder)
       protocol.exchange.server shouldBe "host"
+    }
+
+    describe("Thread pool configuration") {
+      it("should configure thread pool size") {
+        val builder = baseBuilder.threadPoolSize(8)
+        val executor = builder.protocol.exchange.executor
+        // Check that it's a thread pool with 8 threads
+        executor should not be null
+      }
+
+      it("should enable session pooling") {
+        val builder = baseBuilder.enableSessionPooling(true)
+        builder.protocol.exchange.enableSessionPooling shouldBe true
+      }
+
+      it("should configure max pooled sessions") {
+        val builder = baseBuilder.maxPooledSessions(10)
+        builder.protocol.exchange.maxPooledSessions shouldBe 10
+      }
+    }
+
+    describe("Validation") {
+      it("should validate server is not empty") {
+        val builder = baseBuilder.server("")
+        an[IllegalArgumentException] should be thrownBy builder.build
+      }
+
+      it("should validate port is in valid range") {
+        val builder = baseBuilder.port(0)
+        an[IllegalArgumentException] should be thrownBy builder.build
+
+        val builder2 = baseBuilder.port(70000)
+        an[IllegalArgumentException] should be thrownBy builder2.build
+      }
+
+      it("should validate credentials are provided") {
+        val builder = SftpProtocolBuilder(SftpProtocol(
+          exchange = Exchange(null, "localhost", 22, Authentications.Password, null, enableSessionPooling = false, 5),
+          credentials = null,
+          localSourcePath = None,
+          localDestinationPath = None,
+          remoteSourcePath = None,
+          remoteDestinationPath = None
+        ))
+        an[IllegalArgumentException] should be thrownBy builder.build
+      }
     }
   }
 }

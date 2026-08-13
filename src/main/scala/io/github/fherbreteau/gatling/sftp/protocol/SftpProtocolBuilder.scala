@@ -48,5 +48,34 @@ final case class SftpProtocolBuilder(protocol: SftpProtocol) {
 
   def remoteDestinationPath(destPath: String): SftpProtocolBuilder = this.modify(_.protocol.remoteDestinationPath).setTo(Some(destPath))
 
-  def build: SftpProtocol = protocol
+  def threadPoolSize(size: Int): SftpProtocolBuilder = {
+    val newExchange = protocol.exchange.copy(
+      executor = java.util.concurrent.Executors.newFixedThreadPool(size)
+    )
+    this.modify(_.protocol.exchange).setTo(newExchange)
+  }
+
+  def enableSessionPooling(enable: Boolean): SftpProtocolBuilder = {
+    val newExchange = protocol.exchange.copy(enableSessionPooling = enable)
+    this.modify(_.protocol.exchange).setTo(newExchange)
+  }
+
+  def maxPooledSessions(max: Int): SftpProtocolBuilder = {
+    val newExchange = protocol.exchange.copy(maxPooledSessions = max)
+    this.modify(_.protocol.exchange).setTo(newExchange)
+  }
+
+  def build: SftpProtocol = {
+    require(protocol.exchange.server.nonEmpty, "SFTP server cannot be empty")
+    require(protocol.exchange.port > 0 && protocol.exchange.port <= 65535, "SFTP port must be between 1 and 65535")
+    require(protocol.credentials != null, "SFTP credentials must be provided")
+
+    // Validate authentication configuration
+    protocol.exchange.authType match {
+      case Authentications.Password => // Password auth is valid
+      case Authentications.KeyPair => // KeyPair auth is valid
+    }
+
+    protocol
+  }
 }

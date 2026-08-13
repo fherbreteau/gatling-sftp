@@ -1,6 +1,6 @@
 package io.github.fherbreteau.gatling.sftp.integration
 
-import io.gatling.commons.validation.Success
+import io.gatling.commons.validation.{Failure, Success}
 import io.github.fherbreteau.gatling.sftp.client.SftpActions._
 import io.github.fherbreteau.gatling.sftp.client._
 import io.github.fherbreteau.gatling.sftp.model.{Authentications, PasswordAuth}
@@ -68,7 +68,7 @@ class SftpIntegrationSpec extends AnyFunSpec with Matchers with BeforeAndAfterAl
       localDestPath: Option[Path] = None
   ): SftpProtocol = {
     SftpProtocol(
-      exchange = Exchange(null, "localhost", serverPort, Authentications.Password, null),
+      exchange = Exchange(null, "localhost", serverPort, Authentications.Password, null, enableSessionPooling = false, 5),
       credentials = _ => Success(PasswordAuth("testuser", "testpass")),
       localSourcePath = localSourcePath,
       localDestinationPath = localDestPath,
@@ -256,9 +256,16 @@ class SftpIntegrationSpec extends AnyFunSpec with Matchers with BeforeAndAfterAl
       val exchange = Exchange("localhost", serverPort, Authentications.Password)
       exchange.start()
       exchange.stop()
-      // After stop, client is closed. Start should create a new client.
+      // After stop, client is closed. Start should create a new one.
       noException should be thrownBy exchange.start()
       exchange.stop()
+    }
+
+    it("should support configurable thread pool size") {
+      val exchange = Exchange("localhost", serverPort, Authentications.Password, threadPoolSize = 4)
+      exchange.start()
+      exchange.stop()
+      // Just verify it doesn't throw - actual thread pool testing would require more complex setup
     }
   }
 }

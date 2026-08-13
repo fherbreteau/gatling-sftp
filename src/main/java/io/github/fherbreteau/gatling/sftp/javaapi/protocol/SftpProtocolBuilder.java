@@ -135,6 +135,33 @@ public class SftpProtocolBuilder implements ProtocolBuilder {
     }
 
     /**
+     * Configure the thread pool size for concurrent SFTP operations.
+     * @param size the thread pool size
+     * @return a new SftpProtocolBuilder instance
+     */
+    public SftpProtocolBuilder threadPoolSize(int size) {
+        return new SftpProtocolBuilder(wrapped.threadPoolSize(size));
+    }
+
+    /**
+     * Enable or disable session pooling for performance optimization.
+     * @param enable whether to enable session pooling
+     * @return a new SftpProtocolBuilder instance
+     */
+    public SftpProtocolBuilder enableSessionPooling(boolean enable) {
+        return new SftpProtocolBuilder(wrapped.enableSessionPooling(enable));
+    }
+
+    /**
+     * Configure the maximum number of pooled sessions.
+     * @param max the maximum number of pooled sessions
+     * @return a new SftpProtocolBuilder instance
+     */
+    public SftpProtocolBuilder maxPooledSessions(int max) {
+        return new SftpProtocolBuilder(wrapped.maxPooledSessions(max));
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
