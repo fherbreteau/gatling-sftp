@@ -1,9 +1,10 @@
 package io.github.fherbreteau.gatling.sftp.protocol
 
 import io.gatling.commons.validation.{Failure, Success}
-import io.gatling.core.session.{Expression, Session}
+import io.gatling.core.session.Expression
 import io.github.fherbreteau.gatling.sftp.client.Exchange
 import io.github.fherbreteau.gatling.sftp.model.{Authentications, Credentials, KeyPairAuth, PasswordAuth}
+import org.apache.sshd.client.ClientBuilder
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -12,7 +13,7 @@ import java.nio.file.Paths
 class SftpProtocolBuilderSpec extends AnyFunSpec with Matchers {
 
   private def baseProtocol: SftpProtocol = SftpProtocol(
-    exchange = Exchange(null, "localhost", 22, Authentications.Password, null),
+    exchange = Exchange(ClientBuilder.builder(), "localhost", 22, Authentications.Password, null),
     credentials = _ => Failure("not configured"),
     localSourcePath = None,
     localDestinationPath = None,

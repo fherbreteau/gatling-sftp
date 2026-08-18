@@ -4,7 +4,7 @@ import static io.gatling.javaapi.core.internal.Expressions.toStringExpression;
 
 import io.gatling.core.protocol.Protocol;
 import io.gatling.javaapi.core.ProtocolBuilder;
-import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.ClientBuilder;
 
 import java.nio.file.Path;
 
@@ -26,7 +26,7 @@ public class SftpProtocolBuilder implements ProtocolBuilder {
      * @param client the SSH Client to use
      * @return a new SftpProtocolBuilder instance
      */
-    public SftpProtocolBuilder client(SshClient client) {
+    public SftpProtocolBuilder client(ClientBuilder client) {
         return new SftpProtocolBuilder(wrapped.client(client));
     }
 

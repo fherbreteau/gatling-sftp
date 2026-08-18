@@ -1,9 +1,10 @@
 package io.github.fherbreteau.gatling.sftp.protocol
 
 import io.gatling.commons.validation.{Failure, Success}
-import io.gatling.core.session.{Expression, Session}
+import io.gatling.core.session.Expression
 import io.github.fherbreteau.gatling.sftp.client.Exchange
 import io.github.fherbreteau.gatling.sftp.model.{Authentications, Credentials, PasswordAuth}
+import org.apache.sshd.client.ClientBuilder
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -19,7 +20,7 @@ class SftpProtocolSpec extends AnyFunSpec with Matchers {
   ): SftpProtocol = {
     SftpProtocol(
       exchange = Exchange(
-        client = null,
+        clientBuilder = ClientBuilder.builder(),
         server = "localhost",
         port = 22,
         authType = Authentications.Password,
@@ -93,7 +94,7 @@ class SftpProtocolSpec extends AnyFunSpec with Matchers {
 
       it("should throw when credentials expression fails") {
         val protocol = SftpProtocol(
-          exchange = Exchange(null, "localhost", 22, Authentications.Password, null),
+          exchange = Exchange(ClientBuilder.builder(), "localhost", 22, Authentications.Password, null),
           credentials = _ => Failure("unauthenticated"),
           localSourcePath = None,
           localDestinationPath = None,

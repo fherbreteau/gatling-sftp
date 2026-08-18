@@ -5,10 +5,9 @@ import io.gatling.core.session.Expression
 import io.gatling.internal.quicklens._
 import io.github.fherbreteau.gatling.sftp.model.Authentications
 import io.github.fherbreteau.gatling.sftp.util.SftpHelper
-import org.apache.sshd.client.SshClient
+import org.apache.sshd.client.ClientBuilder
 
 import java.nio.file.Path
-import scala.language.implicitConversions
 
 object SftpProtocolBuilder {
 
@@ -18,7 +17,7 @@ object SftpProtocolBuilder {
 }
 
 final case class SftpProtocolBuilder(protocol: SftpProtocol) {
-  def client(client: SshClient): SftpProtocolBuilder = this.modify(_.protocol.exchange.client).setTo(client)
+  def client(clientBuilder: ClientBuilder): SftpProtocolBuilder = this.modify(_.protocol.exchange.clientBuilder).setTo(clientBuilder)
 
   def server(server: String): SftpProtocolBuilder = this.modify(_.protocol.exchange.server).setTo(server)
 

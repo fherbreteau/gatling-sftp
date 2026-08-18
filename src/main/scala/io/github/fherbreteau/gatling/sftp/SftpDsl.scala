@@ -4,8 +4,6 @@ import io.gatling.core.config.GatlingConfiguration
 import io.gatling.core.session.Expression
 import io.github.fherbreteau.gatling.sftp.protocol.{SftpProtocol, SftpProtocolBuilder}
 
-import scala.language.implicitConversions
-
 trait SftpDsl {
 
   def sftp(implicit configuration: GatlingConfiguration): SftpProtocolBuilder = SftpProtocolBuilder(configuration)

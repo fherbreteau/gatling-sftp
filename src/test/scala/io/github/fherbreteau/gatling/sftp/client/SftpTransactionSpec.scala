@@ -4,6 +4,7 @@ import io.gatling.commons.validation.Success
 import io.github.fherbreteau.gatling.sftp.client.SftpActions._
 import io.github.fherbreteau.gatling.sftp.model.{Authentications, PasswordAuth}
 import io.github.fherbreteau.gatling.sftp.protocol.SftpProtocol
+import org.apache.sshd.client.ClientBuilder
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -11,7 +12,7 @@ import org.scalatestplus.mockito.MockitoSugar
 class SftpTransactionSpec extends AnyFunSpec with Matchers with MockitoSugar {
 
   private val protocol = SftpProtocol(
-    exchange = Exchange(null, "sftp.example.com", 2222, Authentications.Password, null),
+    exchange = Exchange(ClientBuilder.builder(), "sftp.example.com", 2222, Authentications.Password, null),
     credentials = _ => Success(PasswordAuth("user", "pass")),
     localSourcePath = None,
     localDestinationPath = None,
