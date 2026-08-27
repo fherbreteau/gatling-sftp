@@ -33,6 +33,13 @@ object Exchange {
       authType = authType,
       executor = Executors.newSingleThreadExecutor()
     )
+
+  def from(template: Exchange): Exchange =
+    Exchange(
+      server = template.server,
+      port = template.port,
+      authType = template.authType
+    )
 }
 
 final case class Exchange(var client: SshClient,

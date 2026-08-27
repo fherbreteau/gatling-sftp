@@ -8,8 +8,9 @@ object SftpClients {
 
   def setSshClient(sftpProtocol: SftpProtocol): Session => Session =
     session => {
-      sftpProtocol.exchange.start()
-      session.set(exchange, sftpProtocol.exchange)
+      val userExchange = Exchange.from(sftpProtocol.exchange)
+      userExchange.start()
+      session.set(exchange, userExchange)
     }
 
   def sftpClient(session: Session): Option[Exchange] =
